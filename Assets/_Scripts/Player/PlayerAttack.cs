@@ -31,6 +31,11 @@ public class PlayerAttack : MonoBehaviour
         if (hitboxHigh != null) hitboxHigh.ownerHealth = health;
     }
 
+    void Update()
+    {
+        Debug.Log("isAttacking = " + isAttacking);
+    }
+
     public void TickCombat()
     {
         HandleGuard();
@@ -102,6 +107,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void AttackFinished()
     {
+        Debug.Log("AttackFinished EVENT RECEIVED");
         isAttacking = false;
 
         if (hitboxLow != null) hitboxLow.DisableHit();
