@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class PlayerAttack : MonoBehaviour
     int hashIsGuarding;
 
     bool isAttacking;
+    Coroutine attackTimeoutRoutine;
 
     void Awake()
     {
@@ -33,6 +35,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        // Solo debug visual
         Debug.Log("isAttacking = " + isAttacking);
     }
 
@@ -52,22 +55,19 @@ public class PlayerAttack : MonoBehaviour
 
     void HandleAttackInput()
     {
-        if (isAttacking) return;
         if (health != null && health.IsDead) return;
+
+        // IMPORTANTE: de momento COMENTAMOS este if para probar ataques seguidos
+        // if (isAttacking) return;
 
         int height = 1;
 
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {
             height = 0;
-        }
         else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
             height = 2;
-        }
 
         int type = -1;
-
         if (Input.GetKeyDown(KeyCode.J)) type = 0;
         else if (Input.GetKeyDown(KeyCode.K)) type = 1;
         else if (Input.GetKeyDown(KeyCode.L)) type = 2;
@@ -79,15 +79,39 @@ public class PlayerAttack : MonoBehaviour
         animator.SetTrigger(hashAttack);
 
         isAttacking = true;
+
+        // seguro por si el evento no llega
+        if (attackTimeoutRoutine != null) StopCoroutine(attackTimeoutRoutine);
+        attackTimeoutRoutine = StartCoroutine(AttackResetTimeout());
     }
+
+    IEnumerator AttackResetTimeout()
+    {
+        // ajusta a la duración de tus animaciones
+        yield return new WaitForSeconds(0.8f);
+
+        if (isAttacking)
+        {
+            Debug.LogWarning("Timeout de ataque -> reseteando isAttacking por seguridad");
+            isAttacking = false;
+
+            if (hitboxLow != null) hitboxLow.DisableHit();
+            if (hitboxMid != null) hitboxMid.DisableHit();
+            if (hitboxHigh != null) hitboxHigh.DisableHit();
+        }
+    }
+
+    // EVENTOS DE ANIMACIÓN
 
     public void HitboxOn(int height)
     {
+        Debug.Log("HitboxOn llamado, altura " + height);
         SwitchHitbox(height, true);
     }
 
     public void HitboxOff(int height)
     {
+        Debug.Log("HitboxOff llamado, altura " + height);
         SwitchHitbox(height, false);
     }
 
@@ -108,7 +132,14 @@ public class PlayerAttack : MonoBehaviour
     public void AttackFinished()
     {
         Debug.Log("AttackFinished EVENT RECEIVED");
+
         isAttacking = false;
+
+        if (attackTimeoutRoutine != null)
+        {
+            StopCoroutine(attackTimeoutRoutine);
+            attackTimeoutRoutine = null;
+        }
 
         if (hitboxLow != null) hitboxLow.DisableHit();
         if (hitboxMid != null) hitboxMid.DisableHit();
