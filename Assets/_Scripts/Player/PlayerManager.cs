@@ -17,7 +17,16 @@ public class PlayerManager : MonoBehaviour
     {
         if (health != null && health.IsDead) return;
 
-        if (movement != null) movement.TickMovement();
         if (attack != null) attack.TickCombat();
+
+        //si ataca no mov
+        if (movement != null && (attack == null || !attack.IsAttacking))
+        {
+            movement.TickMovement();
+        }
+        else if (movement != null)
+        {
+            movement.animator.SetFloat("Speed", 0f);
+        }
     }
 }

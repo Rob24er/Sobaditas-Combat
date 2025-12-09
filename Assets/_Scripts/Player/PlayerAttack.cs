@@ -16,7 +16,11 @@ public class PlayerAttack : MonoBehaviour
     int hashIsGuarding;
 
     bool isAttacking;
+    public bool IsAttacking => isAttacking;
+
     Coroutine attackTimeoutRoutine;
+
+    bool lastAttackState;
 
     void Awake()
     {
@@ -35,8 +39,11 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        // Solo debug visual
-        Debug.Log("isAttacking = " + isAttacking);
+        if (isAttacking != lastAttackState)
+        {
+            Debug.Log("isAttacking = " + isAttacking);
+            lastAttackState = isAttacking;
+        }
     }
 
     public void TickCombat()
@@ -56,9 +63,6 @@ public class PlayerAttack : MonoBehaviour
     void HandleAttackInput()
     {
         if (health != null && health.IsDead) return;
-
-        // IMPORTANTE: de momento COMENTAMOS este if para probar ataques seguidos
-        // if (isAttacking) return;
 
         int height = 1;
 
@@ -87,12 +91,12 @@ public class PlayerAttack : MonoBehaviour
 
     IEnumerator AttackResetTimeout()
     {
-        // ajusta a la duración de tus animaciones
-        yield return new WaitForSeconds(0.8f);
+        //seguro
+        yield return new WaitForSeconds(1.5f);
 
         if (isAttacking)
         {
-            Debug.LogWarning("Timeout de ataque -> reseteando isAttacking por seguridad");
+            Debug.Log("Timeout de ataque -> reseteando isAttacking");
             isAttacking = false;
 
             if (hitboxLow != null) hitboxLow.DisableHit();
@@ -101,7 +105,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // EVENTOS DE ANIMACIÓN
 
     public void HitboxOn(int height)
     {
