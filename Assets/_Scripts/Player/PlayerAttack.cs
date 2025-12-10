@@ -1,6 +1,6 @@
+
 using UnityEngine;
 using System.Collections;
-
 public class PlayerAttack : MonoBehaviour
 {
     public Animator animator;
@@ -14,6 +14,8 @@ public class PlayerAttack : MonoBehaviour
     int hashAttackHeight;
     int hashAttack;
     int hashIsGuarding;
+    int hashXMovement;
+    float lastXDir = 1f;
 
     bool isAttacking;
     public bool IsAttacking => isAttacking;
@@ -31,14 +33,13 @@ public class PlayerAttack : MonoBehaviour
         hashAttackHeight = Animator.StringToHash("AttackHeight");
         hashAttack = Animator.StringToHash("Attack");
         hashIsGuarding = Animator.StringToHash("IsGuarding");
-
-        if (hitboxLow != null) hitboxLow.ownerHealth = health;
-        if (hitboxMid != null) hitboxMid.ownerHealth = health;
-        if (hitboxHigh != null) hitboxHigh.ownerHealth = health;
+        hashXMovement = Animator.StringToHash("XMovement");   // Added
     }
 
     void Update()
     {
+        UpdateXMovement(); //  Added
+
         if (isAttacking != lastAttackState)
         {
             Debug.Log("isAttacking = " + isAttacking);
@@ -46,6 +47,30 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    // ---------------------------------------
+    // XMovement (new)
+    // ---------------------------------------
+    void UpdateXMovement()
+    {
+        float xMove = 0f;
+
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            xMove = -1f;
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            xMove = +1f;
+        else
+            xMove = lastXDir; // keep last direction instead of 0
+
+        // save last direction
+        if (xMove != 0f)
+            lastXDir = xMove;
+
+        animator.SetFloat(hashXMovement, xMove);
+    }
+
+    // ---------------------------------------
+    // COMBAT
+    // ---------------------------------------
     public void TickCombat()
     {
         HandleGuard();
@@ -84,14 +109,12 @@ public class PlayerAttack : MonoBehaviour
 
         isAttacking = true;
 
-        // seguro por si el evento no llega
         if (attackTimeoutRoutine != null) StopCoroutine(attackTimeoutRoutine);
         attackTimeoutRoutine = StartCoroutine(AttackResetTimeout());
     }
 
     IEnumerator AttackResetTimeout()
     {
-        //seguro
         yield return new WaitForSeconds(1.5f);
 
         if (isAttacking)
@@ -104,7 +127,6 @@ public class PlayerAttack : MonoBehaviour
             if (hitboxHigh != null) hitboxHigh.DisableHit();
         }
     }
-
 
     public void HitboxOn(int height)
     {
