@@ -49,19 +49,23 @@ public class EnemyAttack : MonoBehaviour
 
     IEnumerator BlockLoop()
     {
+        
         while (true)
         {
+            Debug.Log("GuardBoolActivadoEnemigo");
             if (health != null && health.IsDead)
             {
+                Debug.Log("Block1");
                 SetGuard(false);
                 yield break;
             }
 
             float waitTime = Random.Range(minIdleTime, maxIdleTime);
             yield return new WaitForSeconds(waitTime);
-
+            Debug.Log("Block2");
             SetGuard(true);
             yield return new WaitForSeconds(blockDuration);
+            Debug.Log("Block3");
             SetGuard(false);
         }
     }
@@ -81,6 +85,7 @@ public class EnemyAttack : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool(hashIsGuarding, value);
+            Debug.Log("GuardActivadoEnemigo");
         }
     }
 }

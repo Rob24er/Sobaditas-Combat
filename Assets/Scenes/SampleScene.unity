@@ -1648,7 +1648,7 @@ Animator:
   m_GameObject: {fileID: 1466638674}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab866ae9669e76e4abef5b03ede08dd9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8c7778f3ffc605b4291e816a2a12e571, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1673,7 +1673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  currentHealth: 0
+  currentHealth: 100
   canBlockHighAndMid: 1
   isGuarding: 0
 --- !u!114 &1466638679
@@ -1761,7 +1761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb3b32ce87a56c14097b1b8ddfe574da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
+  moveSpeed: 1
   animator: {fileID: 1513444895}
 --- !u!114 &1513444900
 MonoBehaviour:
