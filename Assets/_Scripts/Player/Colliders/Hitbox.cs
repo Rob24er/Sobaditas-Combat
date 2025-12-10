@@ -1,20 +1,17 @@
 using UnityEngine;
 using System.Collections;
-
 public enum HitHeight
 {
     Low,
     Mid,
     High
 }
-
 public enum HitStrength
 {
     Light,
     Medium,
     Heavy
 }
-
 public class Hitbox : MonoBehaviour
 {
     public HitHeight height = HitHeight.Mid;

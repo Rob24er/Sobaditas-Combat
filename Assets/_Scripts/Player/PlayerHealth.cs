@@ -1,51 +1,61 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Vida")]
-    public int maxHealth = 100;
-    public int currentHealth;
+    public int MaxHealth = 100;
+    public int CurrentHealth;
 
-    [Header("Bloqueo")]
+    [Header("UI")]
+    public Scrollbar healthBar;
+
+    public bool isGuarding;
     public bool canBlockHighAndMid = true;
-    [HideInInspector] public bool isGuarding;
 
-    public bool IsDead => currentHealth <= 0;
+    public bool IsDead;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        CurrentHealth = MaxHealth;
+        UpdateHealthBar();
+        IsDead = false;
     }
 
     public void TakeHit(Hitbox hit)
     {
-        if (hit == null || IsDead) return;
+        if (hit == null) return;
 
-        bool blockedNow = false;
-
-        if (isGuarding && canBlockHighAndMid)
+        if (isGuarding && canBlockHighAndMid && hit.height != HitHeight.Low)
         {
-            if (hit.height == HitHeight.Mid || hit.height == HitHeight.High)
-            {
-                blockedNow = true;
-            }
-        }
-
-        if (blockedNow)
-        {
-            Debug.Log("block");
+            Debug.Log("Block");
             return;
         }
 
-        currentHealth -= hit.damage;
+        CurrentHealth -= hit.damage;
+        if (CurrentHealth < 0) CurrentHealth = 0;
 
-        if (currentHealth <= 0)
+        Debug.Log("Health = " + CurrentHealth);
+
+        UpdateHealthBar();
+
+        if (CurrentHealth <= 0)
         {
             OnDeath();
+            IsDead = true;
         }
     }
 
-    void OnDeath()
+    public void UpdateHealthBar()
+    {
+        if (healthBar == null || MaxHealth <= 0) return;
+
+        float ratio = (float)CurrentHealth / (float)MaxHealth;
+        ratio = Mathf.Clamp01(ratio);
+
+        healthBar.size = ratio;
+    }
+
+    public void OnDeath()
     {
         Debug.Log("F");
     }
