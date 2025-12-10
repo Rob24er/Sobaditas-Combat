@@ -62,16 +62,16 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 1
-        functionName: HitBoxOff
-        data: HitBoxOff
+      - time: 0.14168008
+        functionName: AttackFinished
+        data: AttackFinished
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.14168008
-        functionName: AttackFinished
-        data: AttackFinished
+      - time: 0.97899157
+        functionName: HitBoxOff
+        data: HitBoxOff
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
