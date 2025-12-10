@@ -15,12 +15,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void TickMovement()
     {
-        float input = Input.GetAxisRaw("Horizontal"); 
+        float input = Input.GetAxisRaw("Horizontal"); // -1 = backward/left, 1 = forward/right
 
         Vector3 moveDir = transform.forward * input;
         transform.position += moveDir * moveSpeed * Time.deltaTime;
 
-        float speedValue = Mathf.Abs(input);
-        animator.SetFloat(hashSpeed, speedValue);
+        // Keep sign to allow backward walking animation
+        animator.SetFloat(hashSpeed, input);
     }
 }
