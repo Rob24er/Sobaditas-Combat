@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
+    public float moveSpeed = 3f;
     public Animator animator;
 
     int hashSpeed;
@@ -12,11 +13,22 @@ public class EnemyMovement : MonoBehaviour
         hashSpeed = Animator.StringToHash("Speed");
     }
 
-    public void TickMovement()
+    public void Move(float direction)
     {
-        if (animator != null)
+        if (direction == 0)
         {
             animator.SetFloat(hashSpeed, 0f);
+            return;
         }
+
+        Vector3 move = transform.forward * direction;
+        transform.position += move * moveSpeed * Time.deltaTime;
+
+        animator.SetFloat(hashSpeed, Mathf.Abs(direction));
+    }
+
+    public void Stop()
+    {
+        Move(0f);
     }
 }

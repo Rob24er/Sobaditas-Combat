@@ -1693,6 +1693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b41c52e1a662440b7070e08f4a8718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 3
   animator: {fileID: 1466638677}
 --- !u!114 &1466638680
 MonoBehaviour:
@@ -1706,9 +1707,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61929bbe66c7724459289f8332ceee31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1513444903}
   movement: {fileID: 1466638679}
   attack: {fileID: 1466638681}
   health: {fileID: 1466638678}
+  closeRange: 1.2
+  farRange: 3
+  decisionCooldown: 0.6
+  visionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &1466638681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1723,10 +1731,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1466638677}
   health: {fileID: 1466638678}
-  enableAutoBlock: 1
-  minIdleTime: 1.5
-  maxIdleTime: 3.5
-  blockDuration: 2
+  hitboxLow: {fileID: 0}
+  hitboxMid: {fileID: 0}
+  hitboxHigh: {fileID: 0}
 --- !u!54 &1466638682
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1752,7 +1759,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 124
   m_CollisionDetection: 0
 --- !u!1 &1513444894 stripped
 GameObject:
@@ -1896,7 +1903,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 124
   m_CollisionDetection: 0
 --- !u!1 &1588676609
 GameObject:
@@ -2089,7 +2096,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: a71ed166c138d9e4290fd859b272c6b2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.2817502
+      value: 2.28
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a71ed166c138d9e4290fd859b272c6b2, type: 3}
       propertyPath: m_LocalPosition.y
