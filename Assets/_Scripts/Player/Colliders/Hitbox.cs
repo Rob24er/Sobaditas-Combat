@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections;
 public enum HitHeight
 {
-    Low,
-    Mid,
-    High
+    Low,   // 0
+    Mid,   // 1
+    High   // 2
 }
 public enum HitStrength
 {

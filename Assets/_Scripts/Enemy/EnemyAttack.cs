@@ -73,6 +73,10 @@ public class EnemyAttack : MonoBehaviour
 
         if (target == null) return;
 
+        if (height == 0) target.height = HitHeight.Low;
+        else if (height == 1) target.height = HitHeight.Mid;
+        else if (height == 2) target.height = HitHeight.High;
+
         if (enable) target.EnableHit();
         else target.DisableHit();
     }

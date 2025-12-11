@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -6,18 +7,20 @@ public class EnemyManager : MonoBehaviour
     public Transform player;
     public EnemyMovement movement;
     public EnemyAttack attack;
-    public PlayerHealth health;
+    public PlayerHealth health; 
 
-    [Header("Rangos")]
-    public float closeRange = 1.2f;   // cuerpo a cuerpo
-    public float farRange = 3f;     // distancia a partir de la cual se acerca sí o sí
+    [Header("Distancias")]
+    public float meleeRange = 2f;
+    public float attackDistance = 1.2f;
+    public float retreatDistance = 2.2f;
 
-    [Header("IA")]
-    public float decisionCooldown = 0.6f;
-    public LayerMask visionMask = ~0; 
+    [Header("Bloqueo")]
+    public float blockDuration = 1.0f;
 
-    float lastDecisionTime;
-    float currentMoveDirection = 0f;
+    [Header("Ritmo IA")]
+    public Vector2 idleBetweenActions = new Vector2(0.3f, 0.7f); // pausas entre decisiones
+
+    public float damageReactWindow = 0.1f;
 
     void Awake()
     {
@@ -26,112 +29,22 @@ public class EnemyManager : MonoBehaviour
         if (health == null) health = GetComponent<PlayerHealth>();
     }
 
+    void Start()
+    {
+        if (player == null)
+        {
+            Debug.LogWarning("EnemyManager no tiene player asignado");
+            enabled = false;
+            return;
+        }
+
+        StartCoroutine(AILoop());
+    }
+
     void Update()
     {
-        if (health != null && health.IsDead)
-        {
-            if (movement != null) movement.Stop();
-            if (attack != null) attack.SetGuard(false);
-            return;
-        }
-
-        if (player == null || movement == null || attack == null) return;
-
-        FacePlayer();
-
-        if (attack.IsAttacking)
-        {
-            movement.Stop();
-            return;
-        }
-
-        float dist = HorizontalDistanceToPlayer();
-        bool seesPlayer = HasLineOfSight();
-
-        if (Time.time < lastDecisionTime + decisionCooldown)
-        {
-            movement.Move(currentMoveDirection);
-            return;
-        }
-
-        lastDecisionTime = Time.time;
-
-        if (!seesPlayer)
-        {
-            //avanzar
-            attack.SetGuard(false);
-            DecideMoveTowardPlayer(+1);
-            return;
-        }
-
-        // lejos del todo -> acercarse
-        if (dist > farRange)
-        {
-            attack.SetGuard(false);
-            DecideMoveTowardPlayer(+1);
-        }
-        // media distancia
-        else if (dist > closeRange)
-        {
-            float r = Random.value;
-            if (r < 0.7f)
-            {
-                attack.SetGuard(false);
-                DecideMoveTowardPlayer(+1);
-            }
-            else
-            {
-                currentMoveDirection = 0f;
-                movement.Stop();
-                attack.SetGuard(true);
-            }
-        }
-        // muy cerca -> atacar / bloquear / retroceder
-        else
-        {
-            float r = Random.value;
-
-            if (r < 0.6f)
-            {
-                // atacar
-                currentMoveDirection = 0f;
-                movement.Stop();
-                attack.SetGuard(false);
-
-                int height = Random.Range(0, 3);
-                int type = Random.Range(0, 3); 
-
-                attack.DoAttack(height, type);
-            }
-            else if (r < 1.2f)
-            {
-                // bloquear
-                currentMoveDirection = 0f;
-                movement.Stop();
-                attack.SetGuard(true);
-            }
-            else
-            {
-                // retroceder
-                attack.SetGuard(false);
-                DecideMoveTowardPlayer(-1);
-            }
-        }
-    }
-
-    void DecideMoveTowardPlayer(float directionSign)
-    {
-        // directionSign: +1 acercarse, -1 alejarse
-        currentMoveDirection = directionSign;
-        movement.Move(currentMoveDirection);
-    }
-
-    float HorizontalDistanceToPlayer()
-    {
-        Vector3 a = transform.position;
-        Vector3 b = player.position;
-        a.y = b.y = 0f;
-        return Vector3.Distance(a, b);
+        if (player != null && !health.IsDead)
+            FacePlayer();
     }
 
     void FacePlayer()
@@ -144,25 +57,238 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    bool HasLineOfSight()
+    IEnumerator AILoop()
     {
-        Vector3 origin = transform.position + Vector3.up * 1f;
-        Vector3 target = player.position + Vector3.up * 1f;
-        Vector3 dir = target - origin;
-        float dist = dir.magnitude;
-        if (dist < 0.001f) return true;
-
-        dir /= dist;
-
-        if (Physics.Raycast(origin, dir, out RaycastHit hit, dist, visionMask))
+        while (!health.IsDead)
         {
-            //visión
-            if (hit.transform == player || hit.transform.IsChildOf(player))
-                return true;
+            float dist = HorizontalDistanceToPlayer();
+            //damage recived
+            if (Time.time - health.lastDamagedTime < damageReactWindow)
+            {
+                attack.SetGuard(false);
+                yield return RetreatToDistance(retreatDistance);
+                yield return SmallIdle();
+                continue;
+            }
 
-            return false;
+            //acercase
+            if (dist > meleeRange + 0.1f)
+            {
+                attack.SetGuard(false);
+                yield return MoveToDistance(meleeRange);
+                yield return SmallIdle();
+                continue;
+            }
+
+            yield return SmallIdle();
+
+            dist = HorizontalDistanceToPlayer();
+            if (health.IsDead) break;
+            if (dist > meleeRange + 0.1f) continue;
+
+            if (dist > attackDistance + 0.1f)
+            {
+                int roll = Random.Range(0, 100);
+
+                if (roll < 60)
+                {
+                    //prep atk
+                    attack.SetGuard(false);
+                    yield return MoveToDistance(attackDistance);
+                    yield return SmallIdle();
+                }
+                else if (roll < 85)
+                {
+                    yield return BlockSequence();
+                }
+                else
+                {
+                    attack.SetGuard(false);
+                    yield return RetreatToDistance(retreatDistance);
+                }
+            }
+            else
+            {
+                int roll = Random.Range(0, 100);
+
+                if (roll < 65)
+                {
+                    yield return AttackSequence();
+                }
+                else if (roll < 90)
+                {
+                    yield return BlockSequence();
+                }
+                else
+                {
+                    attack.SetGuard(false);
+                    yield return RetreatToDistance(retreatDistance);
+                }
+            }
         }
 
-        return true; 
+        movement.Stop();
+        attack.SetGuard(false);
+    }
+
+    IEnumerator SmallIdle()
+    {
+        float t = Random.Range(idleBetweenActions.x, idleBetweenActions.y);
+        yield return new WaitForSeconds(t);
+    }
+
+    IEnumerator MoveToDistance(float desiredDistance)
+    {
+        if (health.IsDead) yield break;
+
+        while (!health.IsDead)
+        {
+            if (Time.time - health.lastDamagedTime < damageReactWindow)
+                yield break;
+
+            float dist = HorizontalDistanceToPlayer();
+            float delta = dist - desiredDistance;
+
+            if (Mathf.Abs(delta) < 0.05f)
+            {
+                movement.Stop();
+                yield break;
+            }
+
+            float dirSign = delta > 0f ? 1f : -1f;
+            movement.Move(dirSign);
+
+            yield return null;
+        }
+
+        movement.Stop();
+    }
+
+    IEnumerator RetreatToDistance(float desiredDistance)
+    {
+        if (health.IsDead) yield break;
+
+        while (!health.IsDead)
+        {
+            float dist = HorizontalDistanceToPlayer();
+            float delta = dist - desiredDistance;
+
+            if (Mathf.Abs(delta) < 0.05f)
+            {
+                movement.Stop();
+                yield break;
+            }
+
+            float dirSign = dist < desiredDistance ? -1f : 1f;
+            movement.Move(dirSign);
+
+            yield return null;
+        }
+
+        movement.Stop();
+    }
+
+    IEnumerator AttackSequence()
+    {
+        if (health.IsDead) yield break;
+
+        //acercar
+        yield return MoveToDistance(attackDistance);
+        if (health.IsDead) yield break;
+
+        yield return AttackOnce();
+        if (health.IsDead) yield break;
+
+        int post = Random.Range(0, 100);
+
+        if (post < 40)
+        {
+            if (Time.time - health.lastDamagedTime >= damageReactWindow)
+                yield return AttackOnce();
+        }
+        else if (post < 80)
+        {
+            yield return BlockSequence();
+        }
+        else
+        {
+            attack.SetGuard(false);
+            yield return RetreatToDistance(retreatDistance);
+        }
+    }
+
+    IEnumerator AttackOnce()
+    {
+        if (health.IsDead) yield break;
+
+        movement.Stop();
+        attack.SetGuard(false);
+
+        int height = Random.Range(0, 3); 
+        int type = Random.Range(0, 3);
+
+        attack.DoAttack(height, type);
+
+        while (attack.IsAttacking && !health.IsDead)
+        {
+            yield return null;
+        }
+
+        yield return SmallIdle();
+    }
+
+    IEnumerator BlockSequence()
+    {
+        if (health.IsDead) yield break;
+
+        movement.Stop();
+        attack.SetGuard(true);
+
+        float startBlockedTime = health.lastBlockedTime;
+        float startDamagedTime = health.lastDamagedTime;
+
+        float endTime = Time.time + blockDuration;
+
+        while (Time.time < endTime && !health.IsDead)
+        {
+            yield return null;
+        }
+
+        attack.SetGuard(false);
+        if (health.IsDead) yield break;
+
+        bool blockedSomething = health.lastBlockedTime > startBlockedTime;
+        bool tookDamage = health.lastDamagedTime > startDamagedTime;
+
+        if (blockedSomething)
+        {
+            yield return AttackOnce();
+        }
+        else if (tookDamage)
+        {
+            int choice = Random.Range(0, 2);
+
+            if (choice == 0)
+            {
+                yield return MoveToDistance(attackDistance);
+                yield return AttackOnce();
+            }
+            else
+            {
+                yield return RetreatToDistance(retreatDistance);
+            }
+        }
+        else
+        {
+            yield return RetreatToDistance(retreatDistance);
+        }
+    }
+
+    float HorizontalDistanceToPlayer()
+    {
+        Vector3 a = transform.position;
+        Vector3 b = player.position;
+        a.y = b.y = 0f;
+        return Vector3.Distance(a, b);
     }
 }

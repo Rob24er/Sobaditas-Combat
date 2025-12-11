@@ -12,40 +12,55 @@ public class PlayerHealth : MonoBehaviour
     public bool isGuarding;
     public bool canBlockHighAndMid = true;
 
-    public bool IsDead;
+    [HideInInspector] public float lastBlockedTime = -999f;
+    [HideInInspector] public float lastDamagedTime = -999f;
+
+    public bool IsDead => CurrentHealth <= 0;
 
     void Start()
     {
         CurrentHealth = MaxHealth;
         UpdateHealthBar();
-        IsDead = false;
     }
 
     public void TakeHit(Hitbox hit)
     {
-        if (hit == null) return;
+        if (hit == null || IsDead) return;
 
-        if (isGuarding && canBlockHighAndMid && hit.height != HitHeight.Low)
+        Debug.Log(name + " recibe intento de golpe altura " + hit.height);
+
+        bool blockedNow = false;
+
+        if (isGuarding && canBlockHighAndMid)
         {
-            Debug.Log("Block");
+            if (hit.height == HitHeight.Mid || hit.height == HitHeight.High)
+            {
+                blockedNow = true;
+            }
+        }
+
+        if (blockedNow)
+        {
+            Debug.Log(name + " bloquea golpe altura " + hit.height);
+            lastBlockedTime = Time.time;
             return;
         }
 
         CurrentHealth -= hit.damage;
         if (CurrentHealth < 0) CurrentHealth = 0;
 
-        Debug.Log("Health = " + CurrentHealth);
+        Debug.Log(name + " recibe " + hit.damage + " daño. Vida " + CurrentHealth);
+        lastDamagedTime = Time.time;
 
         UpdateHealthBar();
 
         if (CurrentHealth <= 0)
         {
             OnDeath();
-            IsDead = true;
         }
     }
 
-    public void UpdateHealthBar()
+    void UpdateHealthBar()
     {
         if (healthBar == null || MaxHealth <= 0) return;
 
@@ -55,8 +70,8 @@ public class PlayerHealth : MonoBehaviour
         healthBar.size = ratio;
     }
 
-    public void OnDeath()
+    void OnDeath()
     {
-        Debug.Log("F");
+        Debug.Log(name + " ha muerto");
     }
 }

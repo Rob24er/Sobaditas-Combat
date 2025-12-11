@@ -47,9 +47,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // ---------------------------------------
-    // XMovement (new)
-    // ---------------------------------------
     void UpdateXMovement()
     {
         float xMove = 0f;
@@ -59,18 +56,14 @@ public class PlayerAttack : MonoBehaviour
         else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             xMove = +1f;
         else
-            xMove = lastXDir; // keep last direction instead of 0
+            xMove = lastXDir;
 
-        // save last direction
         if (xMove != 0f)
             lastXDir = xMove;
 
         animator.SetFloat(hashXMovement, xMove);
     }
 
-    // ---------------------------------------
-    // COMBAT
-    // ---------------------------------------
     public void TickCombat()
     {
         HandleGuard();
@@ -149,6 +142,10 @@ public class PlayerAttack : MonoBehaviour
         else if (height == 2) target = hitboxHigh;
 
         if (target == null) return;
+
+        if (height == 0) target.height = HitHeight.Low;
+        else if (height == 1) target.height = HitHeight.Mid;
+        else if (height == 2) target.height = HitHeight.High;
 
         if (enable) target.EnableHit();
         else target.DisableHit();

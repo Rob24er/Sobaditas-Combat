@@ -837,7 +837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22236c32ac29f924685aac74663231a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 1
+  height: 2
   strength: 0
   damage: 10
   ownerHealth: {fileID: 1466638678}
@@ -974,7 +974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22236c32ac29f924685aac74663231a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 1
+  height: 0
   strength: 0
   damage: 10
   ownerHealth: {fileID: 1466638678}
@@ -1503,7 +1503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22236c32ac29f924685aac74663231a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 1
+  height: 2
   strength: 0
   damage: 10
   ownerHealth: {fileID: 1513444901}
@@ -1651,7 +1651,7 @@ Animator:
   m_GameObject: {fileID: 1466638674}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8c7778f3ffc605b4291e816a2a12e571, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7c8e6ed0dc254a1439c8428fdf54d414, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1680,7 +1680,8 @@ MonoBehaviour:
   healthBar: {fileID: 985209176}
   isGuarding: 0
   canBlockHighAndMid: 1
-  IsDead: 0
+  lastBlockedTime: -999
+  lastDamagedTime: -999
 --- !u!114 &1466638679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1693,7 +1694,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b41c52e1a662440b7070e08f4a8718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 1
   animator: {fileID: 1466638677}
 --- !u!114 &1466638680
 MonoBehaviour:
@@ -1711,12 +1712,12 @@ MonoBehaviour:
   movement: {fileID: 1466638679}
   attack: {fileID: 1466638681}
   health: {fileID: 1466638678}
-  closeRange: 1.2
-  farRange: 3
-  decisionCooldown: 0.6
-  visionMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  meleeRange: 2
+  attackDistance: 1.2
+  retreatDistance: 3
+  blockDuration: 2
+  idleBetweenActions: {x: 0.7, y: 1.1}
+  damageReactWindow: 0.5
 --- !u!114 &1466638681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1731,9 +1732,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1466638677}
   health: {fileID: 1466638678}
-  hitboxLow: {fileID: 0}
-  hitboxMid: {fileID: 0}
-  hitboxHigh: {fileID: 0}
+  hitboxLow: {fileID: 694168805}
+  hitboxMid: {fileID: 2098368319}
+  hitboxHigh: {fileID: 548592580}
 --- !u!54 &1466638682
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1834,7 +1835,8 @@ MonoBehaviour:
   healthBar: {fileID: 1054172247}
   isGuarding: 0
   canBlockHighAndMid: 1
-  IsDead: 0
+  lastBlockedTime: -999
+  lastDamagedTime: -999
 --- !u!114 &1513444902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2082,7 +2084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22236c32ac29f924685aac74663231a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 1
+  height: 0
   strength: 0
   damage: 10
   ownerHealth: {fileID: 1513444901}
