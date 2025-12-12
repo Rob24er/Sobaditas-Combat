@@ -1675,13 +1675,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a43e20e307763042ac622cc754f726a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 100
-  CurrentHealth: 0
-  healthBar: {fileID: 985209176}
+  maxHealth: 100
+  currentHealth: 100
   isGuarding: 0
   canBlockHighAndMid: 1
-  lastBlockedTime: -999
   lastDamagedTime: -999
+  lastBlockedTime: -999
 --- !u!114 &1466638679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1830,13 +1829,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a43e20e307763042ac622cc754f726a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 100
-  CurrentHealth: 0
-  healthBar: {fileID: 1054172247}
+  maxHealth: 100
+  currentHealth: 100
   isGuarding: 0
   canBlockHighAndMid: 1
-  lastBlockedTime: -999
-  lastDamagedTime: -999
+  lastDamagedTime: 0
+  lastBlockedTime: 0
 --- !u!114 &1513444902
 MonoBehaviour:
   m_ObjectHideFlags: 0

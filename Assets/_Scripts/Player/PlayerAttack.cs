@@ -24,6 +24,8 @@ public class PlayerAttack : MonoBehaviour
 
     bool lastAttackState;
 
+    int currentAttackHeight = 1;
+
     void Awake()
     {
         if (animator == null) animator = GetComponent<Animator>();
@@ -33,12 +35,12 @@ public class PlayerAttack : MonoBehaviour
         hashAttackHeight = Animator.StringToHash("AttackHeight");
         hashAttack = Animator.StringToHash("Attack");
         hashIsGuarding = Animator.StringToHash("IsGuarding");
-        hashXMovement = Animator.StringToHash("XMovement");   // Added
+        hashXMovement = Animator.StringToHash("XMovement");
     }
 
     void Update()
     {
-        UpdateXMovement(); //  Added
+        UpdateXMovement(); 
 
         if (isAttacking != lastAttackState)
         {
@@ -98,6 +100,9 @@ public class PlayerAttack : MonoBehaviour
 
         animator.SetInteger(hashAttackType, type);
         animator.SetInteger(hashAttackHeight, height);
+
+        currentAttackHeight = height;
+
         animator.SetTrigger(hashAttack);
 
         isAttacking = true;
@@ -121,16 +126,15 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    public void HitboxOn(int height)
+    public void HitboxOn()
     {
-        Debug.Log("HitboxOn llamado, altura " + height);
-        SwitchHitbox(height, true);
+        SwitchHitbox(currentAttackHeight, true);
     }
 
-    public void HitboxOff(int height)
+
+    public void HitboxOff()
     {
-        Debug.Log("HitboxOff llamado, altura " + height);
-        SwitchHitbox(height, false);
+        SwitchHitbox(currentAttackHeight, false);
     }
 
     void SwitchHitbox(int height, bool enable)

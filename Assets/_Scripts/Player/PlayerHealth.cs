@@ -1,77 +1,101 @@
 using UnityEngine;
-using UnityEngine.UI;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int MaxHealth = 100;
-    public int CurrentHealth;
-
-    [Header("UI")]
-    public Scrollbar healthBar;
+    public int maxHealth = 100;
+    public int currentHealth = 100;
 
     public bool isGuarding;
     public bool canBlockHighAndMid = true;
 
-    [HideInInspector] public float lastBlockedTime = -999f;
-    [HideInInspector] public float lastDamagedTime = -999f;
+    public bool IsDead => currentHealth <= 0;
 
-    public bool IsDead => CurrentHealth <= 0;
+    SkinnedMeshRenderer[] skins;
+    Material[] mats;
+    Color[] original;
+    Coroutine flashCo;
 
-    void Start()
+    public float lastDamagedTime = 0f;
+    public float lastBlockedTime = 0f;
+    void Awake()
     {
-        CurrentHealth = MaxHealth;
-        UpdateHealthBar();
-    }
+        if (currentHealth <= 0) currentHealth = maxHealth;
 
+        skins = GetComponentsInChildren<SkinnedMeshRenderer>(true);
+
+        mats = new Material[skins.Length];
+        original = new Color[skins.Length];
+
+        for (int i = 0; i < skins.Length; i++)
+        {
+            mats[i] = skins[i].material;
+
+            if (mats[i] != null && mats[i].HasProperty("_BaseColor"))
+                original[i] = mats[i].GetColor("_BaseColor");
+            else if (mats[i] != null && mats[i].HasProperty("_Color"))
+                original[i] = mats[i].color;
+        }
+    }
     public void TakeHit(Hitbox hit)
     {
-        if (hit == null || IsDead) return;
+        if (IsDead) return;
 
-        Debug.Log(name + " recibe intento de golpe altura " + hit.height);
-
-        bool blockedNow = false;
-
-        if (isGuarding && canBlockHighAndMid)
+        if (IsBlockedByGuard(hit))
         {
-            if (hit.height == HitHeight.Mid || hit.height == HitHeight.High)
-            {
-                blockedNow = true;
-            }
-        }
-
-        if (blockedNow)
-        {
-            Debug.Log(name + " bloquea golpe altura " + hit.height);
             lastBlockedTime = Time.time;
             return;
         }
 
-        CurrentHealth -= hit.damage;
-        if (CurrentHealth < 0) CurrentHealth = 0;
-
-        Debug.Log(name + " recibe " + hit.damage + " daño. Vida " + CurrentHealth);
+        currentHealth -= hit.damage;
         lastDamagedTime = Time.time;
 
-        UpdateHealthBar();
+        if (flashCo != null) StopCoroutine(flashCo);
+        flashCo = StartCoroutine(FlashRed());
 
-        if (CurrentHealth <= 0)
+        if (currentHealth <= 0)
+            gameObject.SetActive(false);
+    }
+
+    bool IsBlockedByGuard(Hitbox hit)
+    {
+        if (!isGuarding) return false;
+
+        if (hit.height == HitHeight.Low) return false;
+
+        if (!canBlockHighAndMid) return false;
+
+        return hit.height == HitHeight.Mid || hit.height == HitHeight.High;
+    }
+
+    IEnumerator FlashRed()
+    {
+        SetColor(Color.red);
+        yield return new WaitForSeconds(0.25f);
+        RestoreColor();
+    }
+
+    void SetColor(Color c)
+    {
+        for (int i = 0; i < mats.Length; i++)
         {
-            OnDeath();
+            var m = mats[i];
+            if (m == null) continue;
+
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
+            else if (m.HasProperty("_Color")) m.color = c;
         }
     }
 
-    void UpdateHealthBar()
+    void RestoreColor()
     {
-        if (healthBar == null || MaxHealth <= 0) return;
+        for (int i = 0; i < mats.Length; i++)
+        {
+            var m = mats[i];
+            if (m == null) continue;
 
-        float ratio = (float)CurrentHealth / (float)MaxHealth;
-        ratio = Mathf.Clamp01(ratio);
-
-        healthBar.size = ratio;
-    }
-
-    void OnDeath()
-    {
-        Debug.Log(name + " ha muerto");
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", original[i]);
+            else if (m.HasProperty("_Color")) m.color = original[i];
+        }
     }
 }

@@ -30,6 +30,11 @@ public class Hitbox : MonoBehaviour
             col.isTrigger = true;
             col.enabled = false;
         }
+
+        if (ownerHealth == null)
+        {
+            ownerHealth = GetComponentInParent<PlayerHealth>();
+        }
     }
 
     public void EnableHit()
@@ -45,10 +50,15 @@ public class Hitbox : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         Hurtbox hurt = other.GetComponent<Hurtbox>();
+        if (hurt == null)
+            hurt = other.GetComponentInParent<Hurtbox>();
+
         if (hurt == null) return;
         if (hurt.health == null) return;
 
         if (hurt.health == ownerHealth) return;
+
+        Debug.Log(name + " impacta a " + hurt.name + " altura " + height);
 
         hurt.health.TakeHit(this);
     }

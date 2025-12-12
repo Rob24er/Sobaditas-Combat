@@ -18,6 +18,8 @@ public class EnemyAttack : MonoBehaviour
     bool isAttacking;
     public bool IsAttacking => isAttacking;
 
+    int currentAttackHeight = 1;
+
     void Awake()
     {
         if (animator == null) animator = GetComponent<Animator>();
@@ -38,6 +40,8 @@ public class EnemyAttack : MonoBehaviour
         if (isAttacking) return;
         if (health != null && health.IsDead) return;
 
+        currentAttackHeight = height;
+
         animator.SetInteger(hashAttackType, type);
         animator.SetInteger(hashAttackHeight, height);
         animator.SetTrigger(hashAttack);
@@ -50,36 +54,39 @@ public class EnemyAttack : MonoBehaviour
         if (health != null)
             health.isGuarding = value;
 
-        animator.SetBool(hashIsGuarding, value);
+        if (animator != null)
+            animator.SetBool(hashIsGuarding, value);
     }
 
-    public void HitboxOn(int height)
+    public void HitboxOn()
     {
-        SwitchHitbox(height, true);
+        SwitchHitbox(currentAttackHeight, true);
     }
 
-    public void HitboxOff(int height)
+    public void HitboxOff()
     {
-        SwitchHitbox(height, false);
+        SwitchHitbox(currentAttackHeight, false);
     }
 
     void SwitchHitbox(int height, bool enable)
-    {
-        Hitbox target = null;
+{
+    Debug.Log("SwitchHitbox altura " + height + " enable " + enable);
 
-        if (height == 0) target = hitboxLow;
-        else if (height == 1) target = hitboxMid;
-        else if (height == 2) target = hitboxHigh;
+    Hitbox target = null;
 
-        if (target == null) return;
+    if (height == 0) target = hitboxLow;
+    else if (height == 1) target = hitboxMid;
+    else if (height == 2) target = hitboxHigh;
 
-        if (height == 0) target.height = HitHeight.Low;
-        else if (height == 1) target.height = HitHeight.Mid;
-        else if (height == 2) target.height = HitHeight.High;
+    if (target == null) return;
 
-        if (enable) target.EnableHit();
-        else target.DisableHit();
-    }
+    if (height == 0) target.height = HitHeight.Low;
+    else if (height == 1) target.height = HitHeight.Mid;
+    else if (height == 2) target.height = HitHeight.High;
+
+    if (enable) target.EnableHit();
+    else target.DisableHit();
+}
 
     public void AttackFinished()
     {
