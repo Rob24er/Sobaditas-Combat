@@ -27,6 +27,22 @@ public class PlayerAttack : MonoBehaviour
     bool lastAttackState;
 
     int currentAttackHeight = 1;
+    int currentAttackType = 0;
+
+    [Header("Damage - Left Hand")]
+    public int leftHandUp = 10;
+    public int leftHandMid = 8;
+    public int leftHandDown = 6;
+
+    [Header("Damage - Right Hand")]
+    public int rightHandUp = 12;
+    public int rightHandMid = 10;
+    public int rightHandDown = 8;
+
+    [Header("Damage - Leg")]
+    public int legUp = 15;
+    public int legMid = 12;
+    public int legDown = 10;
 
     void Awake()
     {
@@ -107,6 +123,7 @@ public class PlayerAttack : MonoBehaviour
         animator.SetInteger(hashAttackHeight, height);
 
         currentAttackHeight = height;
+        currentAttackType = type;
 
         animator.SetTrigger(hashAttack);
 
@@ -156,8 +173,35 @@ public class PlayerAttack : MonoBehaviour
         else if (height == 1) target.height = HitHeight.Mid;
         else if (height == 2) target.height = HitHeight.High;
 
+        if (enable)
+        {
+            target.damage = GetDamageForCurrentAttack();
+        }
+
         if (enable) target.EnableHit();
         else target.DisableHit();
+    }
+    int GetDamageForCurrentAttack()
+    {
+
+        if (currentAttackType == 0)
+        {
+            if (currentAttackHeight == 0) return leftHandDown;
+            if (currentAttackHeight == 1) return leftHandMid;
+            return leftHandUp;
+        }
+        else if (currentAttackType == 1)
+        {
+            if (currentAttackHeight == 0) return rightHandDown;
+            if (currentAttackHeight == 1) return rightHandMid;
+            return rightHandUp;
+        }
+        else
+        {
+            if (currentAttackHeight == 0) return legDown;
+            if (currentAttackHeight == 1) return legMid;
+            return legUp;
+        }
     }
 
     //Terminar de atacar EVENTO

@@ -19,6 +19,22 @@ public class EnemyAttack : MonoBehaviour
     public bool IsAttacking => isAttacking;
 
     int currentAttackHeight = 1;
+    int currentAttackType = 0;
+
+    [Header("Damage - Left Hand")]
+    public int leftHandUp = 10;
+    public int leftHandMid = 8;
+    public int leftHandDown = 6;
+
+    [Header("Damage - Right Hand")]
+    public int rightHandUp = 12;
+    public int rightHandMid = 10;
+    public int rightHandDown = 8;
+
+    [Header("Damage - Leg")]
+    public int legUp = 15;
+    public int legMid = 12;
+    public int legDown = 10;
 
     void Awake()
     {
@@ -42,6 +58,7 @@ public class EnemyAttack : MonoBehaviour
         if (health != null && health.IsDead) return;
 
         currentAttackHeight = height;
+        currentAttackType = type;
 
         animator.SetInteger(hashAttackType, type);
         animator.SetInteger(hashAttackHeight, height);
@@ -59,6 +76,7 @@ public class EnemyAttack : MonoBehaviour
         if (animator != null)
             animator.SetBool(hashIsGuarding, value);
     }
+
     //HIT box on y off
     public void HitboxOn()
     {
@@ -71,26 +89,52 @@ public class EnemyAttack : MonoBehaviour
     }
 
     void SwitchHitbox(int height, bool enable)
-{
-    Debug.Log("SwitchHitbox altura " + height + " enable " + enable);
+    {
+       Debug.Log("SwitchHitbox altura " + height + " enable " + enable);
 
-    Hitbox target = null;
+       Hitbox target = null;
 
-    if (height == 0) target = hitboxLow;
-    else if (height == 1) target = hitboxMid;
-    else if (height == 2) target = hitboxHigh;
+       if (height == 0) target = hitboxLow;
+       else if (height == 1) target = hitboxMid;
+       else if (height == 2) target = hitboxHigh;
 
-    if (target == null) return;
+       if (target == null) return;
 
-    if (height == 0) target.height = HitHeight.Low;
-    else if (height == 1) target.height = HitHeight.Mid;
-    else if (height == 2) target.height = HitHeight.High;
+       if (height == 0) target.height = HitHeight.Low;
+       else if (height == 1) target.height = HitHeight.Mid;
+       else if (height == 2) target.height = HitHeight.High;
 
-    if (enable) target.EnableHit();
-    else target.DisableHit();
-}
+         if (enable)
+         {
+            target.damage = GetDamageForCurrentAttack();
+         }
 
+       if (enable) target.EnableHit();
+       else target.DisableHit();
+    }
 
+    //Detectar q daño hacer
+    int GetDamageForCurrentAttack()
+    {
+        if (currentAttackType == 0)
+        {
+            if (currentAttackHeight == 0) return leftHandDown;
+            if (currentAttackHeight == 1) return leftHandMid;
+            return leftHandUp;
+        }
+        else if (currentAttackType == 1)
+        {
+            if (currentAttackHeight == 0) return rightHandDown;
+            if (currentAttackHeight == 1) return rightHandMid;
+            return rightHandUp;
+        }
+        else
+        {
+            if (currentAttackHeight == 0) return legDown;
+            if (currentAttackHeight == 1) return legMid;
+            return legUp;
+        }
+    }
     //Evento dejar de atacar
     public void AttackFinished()
     {

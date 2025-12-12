@@ -22,6 +22,7 @@ public class Hitbox : MonoBehaviour
 
     Collider col;
 
+    bool hasHitSomeone;
     void Awake()
     {
         col = GetComponent<Collider>();
@@ -40,6 +41,7 @@ public class Hitbox : MonoBehaviour
     //Daño activar desactivar
     public void EnableHit()
     {
+        hasHitSomeone = false;
         if (col != null) col.enabled = true;
     }
 
@@ -50,6 +52,8 @@ public class Hitbox : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (hasHitSomeone) return;
+
         Hurtbox hurt = other.GetComponent<Hurtbox>();
         if (hurt == null)
             hurt = other.GetComponentInParent<Hurtbox>();
@@ -59,7 +63,10 @@ public class Hitbox : MonoBehaviour
 
         if (hurt.health == ownerHealth) return;
 
-        Debug.Log(name + " impacta a " + hurt.name + " altura " + height);
+        Debug.Log(
+        "[HITBOX] " + name + " HIT -> Damage: " + damage + " Height: " + height + " Target: " + hurt.name);
+
+        hasHitSomeone = true;
 
         hurt.health.TakeHit(this);
     }
