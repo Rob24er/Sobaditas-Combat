@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth = 100;
+    public Scrollbar healthBar;
 
     public bool isGuarding;
     public bool canBlockHighAndMid = true;
@@ -36,6 +38,8 @@ public class PlayerHealth : MonoBehaviour
             else if (mats[i] != null && mats[i].HasProperty("_Color"))
                 original[i] = mats[i].color;
         }
+
+        UpdateBar();
     }
     public void TakeHit(Hitbox hit)
     {
@@ -49,6 +53,8 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= hit.damage;
         lastDamagedTime = Time.time;
+
+        UpdateBar();
 
         if (flashCo != null) StopCoroutine(flashCo);
         flashCo = StartCoroutine(FlashRed());
@@ -97,5 +103,13 @@ public class PlayerHealth : MonoBehaviour
             if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", original[i]);
             else if (m.HasProperty("_Color")) m.color = original[i];
         }
+    }
+
+    void UpdateBar()
+    {
+        if (healthBar == null) return;
+
+        float ratio = (float)currentHealth / (float)maxHealth;
+        healthBar.size = Mathf.Clamp01(ratio);
     }
 }
