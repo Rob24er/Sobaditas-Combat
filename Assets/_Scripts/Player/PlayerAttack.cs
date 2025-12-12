@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 public class PlayerAttack : MonoBehaviour
 {
+    //gameObjects
     public Animator animator;
     public PlayerHealth health;
 
@@ -10,6 +11,7 @@ public class PlayerAttack : MonoBehaviour
     public Hitbox hitboxMid;
     public Hitbox hitboxHigh;
 
+    //variables
     int hashAttackType;
     int hashAttackHeight;
     int hashAttack;
@@ -48,7 +50,7 @@ public class PlayerAttack : MonoBehaviour
             lastAttackState = isAttacking;
         }
     }
-
+    //movimiento en X
     void UpdateXMovement()
     {
         float xMove = 0f;
@@ -66,12 +68,14 @@ public class PlayerAttack : MonoBehaviour
         animator.SetFloat(hashXMovement, xMove);
     }
 
+
     public void TickCombat()
     {
         HandleGuard();
         HandleAttackInput();
     }
 
+    //GUARDIA
     void HandleGuard()
     {
         bool guardInput = Input.GetKey(KeyCode.Space);
@@ -80,6 +84,7 @@ public class PlayerAttack : MonoBehaviour
         animator.SetBool(hashIsGuarding, guardInput);
     }
 
+    //ATAQUE
     void HandleAttackInput()
     {
         if (health != null && health.IsDead) return;
@@ -111,6 +116,7 @@ public class PlayerAttack : MonoBehaviour
         attackTimeoutRoutine = StartCoroutine(AttackResetTimeout());
     }
 
+    //Dejar de atacar por codigo si no va el evento
     IEnumerator AttackResetTimeout()
     {
         yield return new WaitForSeconds(1.5f);
@@ -126,12 +132,11 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    //HitBoxes
     public void HitboxOn()
     {
         SwitchHitbox(currentAttackHeight, true);
     }
-
-
     public void HitboxOff()
     {
         SwitchHitbox(currentAttackHeight, false);
@@ -155,6 +160,7 @@ public class PlayerAttack : MonoBehaviour
         else target.DisableHit();
     }
 
+    //Terminar de atacar EVENTO
     public void AttackFinished()
     {
         Debug.Log("AttackFinished EVENT RECEIVED");

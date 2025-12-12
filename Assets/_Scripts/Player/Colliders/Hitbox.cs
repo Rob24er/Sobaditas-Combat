@@ -37,6 +37,7 @@ public class Hitbox : MonoBehaviour
         }
     }
 
+    //Daño activar desactivar
     public void EnableHit()
     {
         if (col != null) col.enabled = true;

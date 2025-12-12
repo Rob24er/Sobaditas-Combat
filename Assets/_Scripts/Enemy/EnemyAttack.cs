@@ -35,6 +35,7 @@ public class EnemyAttack : MonoBehaviour
         if (hitboxHigh != null) hitboxHigh.ownerHealth = health;
     }
 
+    //ataque
     public void DoAttack(int height, int type)
     {
         if (isAttacking) return;
@@ -49,6 +50,7 @@ public class EnemyAttack : MonoBehaviour
         isAttacking = true;
     }
 
+    //Guard
     public void SetGuard(bool value)
     {
         if (health != null)
@@ -57,7 +59,7 @@ public class EnemyAttack : MonoBehaviour
         if (animator != null)
             animator.SetBool(hashIsGuarding, value);
     }
-
+    //HIT box on y off
     public void HitboxOn()
     {
         SwitchHitbox(currentAttackHeight, true);
@@ -88,6 +90,8 @@ public class EnemyAttack : MonoBehaviour
     else target.DisableHit();
 }
 
+
+    //Evento dejar de atacar
     public void AttackFinished()
     {
         isAttacking = false;

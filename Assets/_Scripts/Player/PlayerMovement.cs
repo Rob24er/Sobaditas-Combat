@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
         hashSpeed = Animator.StringToHash("Speed");
     }
 
+    //Movimiento
     public void TickMovement()
     {
         float input = Input.GetAxisRaw("Horizontal"); 

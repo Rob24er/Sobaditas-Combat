@@ -41,6 +41,8 @@ public class PlayerHealth : MonoBehaviour
 
         UpdateBar();
     }
+
+    //Recibir daño
     public void TakeHit(Hitbox hit)
     {
         if (IsDead) return;
@@ -63,6 +65,7 @@ public class PlayerHealth : MonoBehaviour
             gameObject.SetActive(false);
     }
 
+    //Bloqueo
     bool IsBlockedByGuard(Hitbox hit)
     {
         if (!isGuarding) return false;
@@ -74,6 +77,7 @@ public class PlayerHealth : MonoBehaviour
         return hit.height == HitHeight.Mid || hit.height == HitHeight.High;
     }
 
+    //Color rojo
     IEnumerator FlashRed()
     {
         SetColor(Color.red);
@@ -105,6 +109,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    //Barra HP UI
     void UpdateBar()
     {
         if (healthBar == null) return;

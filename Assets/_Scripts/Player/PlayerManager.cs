@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
 
     void Awake()
     {
+        //pillar los codigos del player
         if (movement == null) movement = GetComponent<PlayerMovement>();
         if (attack == null) attack = GetComponent<PlayerAttack>();
         if (health == null) health = GetComponent<PlayerHealth>();

@@ -47,6 +47,7 @@ public class EnemyManager : MonoBehaviour
             FacePlayer();
     }
 
+    //buscar player
     void FacePlayer()
     {
         Vector3 dir = player.position - transform.position;
@@ -57,6 +58,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    //IA
     IEnumerator AILoop()
     {
         while (!health.IsDead)
@@ -85,14 +87,14 @@ public class EnemyManager : MonoBehaviour
             dist = HorizontalDistanceToPlayer();
             if (health.IsDead) break;
             if (dist > meleeRange + 0.1f) continue;
-
+            //logica distanca media
             if (dist > attackDistance + 0.1f)
             {
                 int roll = Random.Range(0, 100);
 
                 if (roll < 60)
                 {
-                    //prep atk
+                    //prepara atk
                     attack.SetGuard(false);
                     yield return MoveToDistance(attackDistance);
                     yield return SmallIdle();
@@ -188,6 +190,7 @@ public class EnemyManager : MonoBehaviour
         movement.Stop();
     }
 
+    //AttackManager
     IEnumerator AttackSequence()
     {
         if (health.IsDead) yield break;
@@ -237,6 +240,7 @@ public class EnemyManager : MonoBehaviour
         yield return SmallIdle();
     }
 
+    //BlockManager
     IEnumerator BlockSequence()
     {
         if (health.IsDead) yield break;
@@ -284,6 +288,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    //Distancia al player
     float HorizontalDistanceToPlayer()
     {
         Vector3 a = transform.position;
