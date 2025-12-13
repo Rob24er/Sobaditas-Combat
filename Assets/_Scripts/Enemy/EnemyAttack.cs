@@ -36,10 +36,14 @@ public class EnemyAttack : MonoBehaviour
     public int legMid = 12;
     public int legDown = 10;
 
+    [Header("VFX")]
+    public SFX_Char sfx_Char;
+
     void Awake()
     {
         if (animator == null) animator = GetComponent<Animator>();
         if (health == null) health = GetComponent<PlayerHealth>();
+        if (sfx_Char == null) sfx_Char = GetComponent<SFX_Char>();
 
         hashAttackType = Animator.StringToHash("AttackType");
         hashAttackHeight = Animator.StringToHash("AttackHeight");
@@ -80,6 +84,7 @@ public class EnemyAttack : MonoBehaviour
     //HIT box on y off
     public void HitboxOn()
     {
+        if (sfx_Char != null) sfx_Char.PlayAttack();
         SwitchHitbox(currentAttackHeight, true);
     }
 

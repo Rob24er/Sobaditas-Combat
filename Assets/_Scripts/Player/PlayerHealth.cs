@@ -20,8 +20,13 @@ public class PlayerHealth : MonoBehaviour
 
     public float lastDamagedTime = 0f;
     public float lastBlockedTime = 0f;
+
+    [Header("VFX")]
+    public SFX_Char sfx_Char;
+
     void Awake()
     {
+        if (sfx_Char == null) sfx_Char = GetComponent<SFX_Char>();
         if (currentHealth <= 0) currentHealth = maxHealth;
 
         skins = GetComponentsInChildren<SkinnedMeshRenderer>(true);
@@ -50,10 +55,12 @@ public class PlayerHealth : MonoBehaviour
         if (IsBlockedByGuard(hit))
         {
             lastBlockedTime = Time.time;
+            if (sfx_Char != null) sfx_Char.PlayBlock();
             return;
         }
 
         currentHealth -= hit.damage;
+        if (sfx_Char != null) sfx_Char.PlayHit();
         lastDamagedTime = Time.time;
 
         UpdateBar();
@@ -62,7 +69,11 @@ public class PlayerHealth : MonoBehaviour
         flashCo = StartCoroutine(FlashRed());
 
         if (currentHealth <= 0)
-            gameObject.SetActive(false);
+        {
+            if (sfx_Char != null) sfx_Char.PlayDeath();
+            StartCoroutine(DisableAfter(0.2f));
+        }
+        
     }
 
     //Bloqueo
@@ -116,5 +127,11 @@ public class PlayerHealth : MonoBehaviour
 
         float ratio = (float)currentHealth / (float)maxHealth;
         healthBar.size = Mathf.Clamp01(ratio);
+    }
+
+    IEnumerator DisableAfter(float t)
+    {
+        yield return new WaitForSeconds(t);
+        gameObject.SetActive(false);
     }
 }

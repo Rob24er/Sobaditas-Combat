@@ -18,7 +18,7 @@ public class EnemyManager : MonoBehaviour
     public float blockDuration = 1.0f;
 
     [Header("Ritmo IA")]
-    public Vector2 idleBetweenActions = new Vector2(0.3f, 0.7f); // pausas entre decisiones
+    public Vector2 idleBetweenActions = new Vector2(0.5f, 0.8f); //pausa
 
     public float damageReactWindow = 0.1f;
 
