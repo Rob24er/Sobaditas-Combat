@@ -1051,6 +1051,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &548592581
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1247,6 +1250,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &694168806
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1339,6 +1345,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!1 &725220010
 GameObject:
   m_ObjectHideFlags: 0
@@ -2111,6 +2120,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &1173562805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2464,6 +2476,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 985209176}
+  damageVFX: {fileID: 1855578464915014209, guid: 5396fe2aa4b2c494a9ee43bad38059bd, type: 3}
   isGuarding: 0
   vfx: {fileID: 0}
   hitPoint: {fileID: 0}
@@ -2499,6 +2512,7 @@ MonoBehaviour:
   movement: {fileID: 1466638679}
   attack: {fileID: 1466638681}
   health: {fileID: 1466638678}
+  animator: {fileID: 0}
   meleeRange: 2
   attackDistance: 1.2
   retreatDistance: 3
@@ -2655,6 +2669,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 1054172247}
+  damageVFX: {fileID: 0}
   isGuarding: 0
   vfx: {fileID: 1513444907}
   hitPoint: {fileID: 500758603}
@@ -3118,6 +3133,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!1 &1828819560
 GameObject:
   m_ObjectHideFlags: 0
@@ -3423,6 +3441,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &2098368320
 BoxCollider:
   m_ObjectHideFlags: 0
