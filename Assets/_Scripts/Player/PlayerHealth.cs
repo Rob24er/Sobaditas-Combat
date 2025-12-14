@@ -1,10 +1,12 @@
 using UnityEngine;
-
+using System.Collections;
+using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health")]
     public int maxHealth = 100;
     public int currentHealth;
+    public Scrollbar healthBar;
 
     [Header("State")]
     public bool isGuarding;
@@ -27,6 +29,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (hitPoint == null)
             hitPoint = transform; // si no hay HitPoint asignado, usar pivot
+        UpdateBar();
     }
 
     public void TakeHit(Hitbox hitbox)
@@ -53,7 +56,7 @@ public class PlayerHealth : MonoBehaviour
 
             // aplicar da?o
             currentHealth -= hitbox.damage;
-
+            
             // reproducir VFX de golpe
             if (vfx != null)
                 vfx.PlayHitVFX(hitPoint.position);
@@ -64,6 +67,15 @@ public class PlayerHealth : MonoBehaviour
                 currentHealth = 0;
                 Debug.Log(name + " DEAD");
             }
+            UpdateBar();
+
         }
+    }
+    void UpdateBar()
+    {
+        if (healthBar == null) return;
+
+        float ratio = (float)currentHealth / (float)maxHealth;
+        healthBar.size = Mathf.Clamp01(ratio);
     }
 }
