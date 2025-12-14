@@ -95,27 +95,27 @@ public class EnemyAttack : MonoBehaviour
 
     void SwitchHitbox(int height, bool enable)
     {
-       Debug.Log("SwitchHitbox altura " + height + " enable " + enable);
+        Debug.Log("SwitchHitbox altura " + height + " enable " + enable);
 
-       Hitbox target = null;
+        Hitbox target = null;
 
-       if (height == 0) target = hitboxLow;
-       else if (height == 1) target = hitboxMid;
-       else if (height == 2) target = hitboxHigh;
+        if (height == 0) target = hitboxLow;
+        else if (height == 1) target = hitboxMid;
+        else if (height == 2) target = hitboxHigh;
 
-       if (target == null) return;
+        if (target == null) return;
 
-       if (height == 0) target.height = HitHeight.Low;
-       else if (height == 1) target.height = HitHeight.Mid;
-       else if (height == 2) target.height = HitHeight.High;
+        if (height == 0) target.height = HitHeight.Low;
+        else if (height == 1) target.height = HitHeight.Mid;
+        else if (height == 2) target.height = HitHeight.High;
 
-         if (enable)
-         {
+        if (enable)
+        {
             target.damage = GetDamageForCurrentAttack();
-         }
+        }
 
-       if (enable) target.EnableHit();
-       else target.DisableHit();
+        if (enable) target.EnableHit();
+        else target.DisableHit();
     }
 
     //Detectar q daño hacer
@@ -140,6 +140,7 @@ public class EnemyAttack : MonoBehaviour
             return legUp;
         }
     }
+
     //Evento dejar de atacar
     public void AttackFinished()
     {

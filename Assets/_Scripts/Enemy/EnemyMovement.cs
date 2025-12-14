@@ -24,7 +24,7 @@ public class EnemyMovement : MonoBehaviour
         Vector3 move = transform.forward * direction;
         transform.position += move * moveSpeed * Time.deltaTime;
 
-        animator.SetFloat(hashSpeed, Mathf.Abs(direction));
+        animator.SetFloat(hashSpeed, (direction));
     }
 
     public void Stop()
