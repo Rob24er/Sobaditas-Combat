@@ -51,6 +51,9 @@ public class PlayerHealth : MonoBehaviour
             // reproducir VFX de bloqueo
             if (vfx != null)
                 vfx.PlayBlockVFX(hitPoint.position);
+            
+            var go= Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+            go.GetComponent<TextMeshPro>().text = "Blocked!";
         }
         else
         {
