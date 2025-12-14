@@ -17,8 +17,13 @@ public class Hitbox : MonoBehaviour
     public HitHeight height = HitHeight.Mid;
     public HitStrength strength = HitStrength.Light;
     public int damage = 10;
-
+    public FighterVFX testVfx;
     public PlayerHealth ownerHealth;
+
+    [Header("Hit VFX Offsets")]
+    public Vector3 lowHitOffset;
+    public Vector3 midHitOffset;
+    public Vector3 highHitOffset;
 
     Collider col;
 
@@ -38,7 +43,7 @@ public class Hitbox : MonoBehaviour
         }
     }
 
-    //Daño activar desactivar
+    //Daï¿½o activar desactivar
     public void EnableHit()
     {
         hasHitSomeone = false;
@@ -67,7 +72,27 @@ public class Hitbox : MonoBehaviour
         "[HITBOX] " + name + " HIT -> Damage: " + damage + " Height: " + height + " Target: " + hurt.name);
 
         hasHitSomeone = true;
+        if (testVfx != null)
+        {
+            Vector3 hitPos = transform.position;
 
+            switch (height)
+            {
+                case HitHeight.Low:
+                    hitPos += lowHitOffset;
+                    break;
+
+                case HitHeight.Mid:
+                    hitPos += midHitOffset;
+                    break;
+
+                case HitHeight.High:
+                    hitPos += highHitOffset;
+                    break;
+            }
+
+            testVfx.PlayHitVFX(hitPos);
+        }
         hurt.health.TakeHit(this);
         
     }
