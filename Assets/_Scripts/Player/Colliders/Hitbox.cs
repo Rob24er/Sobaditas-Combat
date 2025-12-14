@@ -69,5 +69,6 @@ public class Hitbox : MonoBehaviour
         hasHitSomeone = true;
 
         hurt.health.TakeHit(this);
+        
     }
 }
