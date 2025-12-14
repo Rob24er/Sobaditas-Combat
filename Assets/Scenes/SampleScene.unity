@@ -1049,6 +1049,7 @@ MonoBehaviour:
   height: 2
   strength: 0
   damage: 10
+  testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
 --- !u!65 &548592581
 BoxCollider:
@@ -1244,6 +1245,7 @@ MonoBehaviour:
   height: 0
   strength: 0
   damage: 10
+  testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
 --- !u!65 &694168806
 BoxCollider:
@@ -1335,6 +1337,7 @@ MonoBehaviour:
   height: 1
   strength: 0
   damage: 10
+  testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
 --- !u!1 &725220010
 GameObject:
@@ -2106,6 +2109,7 @@ MonoBehaviour:
   height: 2
   strength: 0
   damage: 10
+  testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
 --- !u!65 &1173562805
 BoxCollider:
@@ -2459,6 +2463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
+  healthBar: {fileID: 985209176}
   isGuarding: 0
   vfx: {fileID: 0}
   hitPoint: {fileID: 0}
@@ -2649,6 +2654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
+  healthBar: {fileID: 1054172247}
   isGuarding: 0
   vfx: {fileID: 1513444907}
   hitPoint: {fileID: 500758603}
@@ -3110,6 +3116,7 @@ MonoBehaviour:
   height: 0
   strength: 0
   damage: 10
+  testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
 --- !u!1 &1828819560
 GameObject:
@@ -3414,6 +3421,7 @@ MonoBehaviour:
   height: 1
   strength: 0
   damage: 10
+  testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
 --- !u!65 &2098368320
 BoxCollider:
