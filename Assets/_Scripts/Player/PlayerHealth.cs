@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
     public Scrollbar healthBar;
+    public InGameTextVfx damageVFX;
+
 
     [Header("State")]
     public bool isGuarding;
@@ -56,6 +59,9 @@ public class PlayerHealth : MonoBehaviour
 
             // aplicar da?o
             currentHealth -= hitbox.damage;
+            var go= Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+            go.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
+            
             
             // reproducir VFX de golpe
             if (vfx != null)

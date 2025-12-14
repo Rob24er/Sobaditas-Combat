@@ -9,6 +9,8 @@ public class FighterVFX : MonoBehaviour
     {
         if (hitVFX)
             Instantiate(hitVFX, position, Quaternion.identity);
+        
+
     }
 
     public void PlayBlockVFX(Vector3 position)
