@@ -12,11 +12,11 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("VFX")]
     public FighterVFX vfx;
-    public Transform hitPoint; // posición donde aparecerán los efectos
+    public Transform hitPoint; // posici?n donde aparecer?n los efectos
 
     [Header("Timers")]
-    public float lastDamagedTime = -10f; // momento del último golpe recibido
-    public float lastBlockedTime = -10f; // momento del último bloqueo
+    public float lastDamagedTime = -10f; // momento del ?ltimo golpe recibido
+    public float lastBlockedTime = -10f; // momento del ?ltimo bloqueo
 
     void Awake()
     {
@@ -31,6 +31,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeHit(Hitbox hitbox)
     {
+        print("takehit");
         if (IsDead) return;
 
         // decidir si se bloquea
@@ -50,7 +51,7 @@ public class PlayerHealth : MonoBehaviour
             // registrar golpe recibido
             lastDamagedTime = Time.time;
 
-            // aplicar daño
+            // aplicar da?o
             currentHealth -= hitbox.damage;
 
             // reproducir VFX de golpe
