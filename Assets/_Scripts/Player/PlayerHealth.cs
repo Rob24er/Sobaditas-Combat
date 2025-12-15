@@ -9,6 +9,11 @@ public class PlayerHealth : MonoBehaviour
     public int currentHealth;
     public Scrollbar healthBar;
     public InGameTextVfx damageVFX;
+   
+    
+    //Hitstunt
+    public Animator animator;
+    
 
 
     [Header("State")]
@@ -75,9 +80,13 @@ public class PlayerHealth : MonoBehaviour
             {
                 currentHealth = 0;
                 Debug.Log(name + " DEAD");
+                animator.SetTrigger("isDead");
+                Invoke("RestartScene", 5f); 
             }
             UpdateBar();
-
+            
+            
+          animator.SetTrigger("hitY");
         }
     }
     void UpdateBar()
@@ -86,5 +95,11 @@ public class PlayerHealth : MonoBehaviour
 
         float ratio = (float)currentHealth / (float)maxHealth;
         healthBar.size = Mathf.Clamp01(ratio);
+    }
+    void RestartScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
+        );
     }
 }
