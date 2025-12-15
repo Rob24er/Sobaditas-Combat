@@ -1051,6 +1051,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &548592581
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1247,6 +1250,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &694168806
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1339,6 +1345,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!1 &725220010
 GameObject:
   m_ObjectHideFlags: 0
@@ -2111,6 +2120,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &1173562805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2464,6 +2476,8 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 985209176}
+  damageVFX: {fileID: 1855578464915014209, guid: 5396fe2aa4b2c494a9ee43bad38059bd, type: 3}
+  animator: {fileID: 1466638677}
   isGuarding: 0
   vfx: {fileID: 0}
   hitPoint: {fileID: 0}
@@ -2499,6 +2513,7 @@ MonoBehaviour:
   movement: {fileID: 1466638679}
   attack: {fileID: 1466638681}
   health: {fileID: 1466638678}
+  animator: {fileID: 1466638677}
   meleeRange: 2
   attackDistance: 1.2
   retreatDistance: 3
@@ -2558,7 +2573,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 124
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1466638683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2655,6 +2670,8 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 1054172247}
+  damageVFX: {fileID: 0}
+  animator: {fileID: 1466638677}
   isGuarding: 0
   vfx: {fileID: 1513444907}
   hitPoint: {fileID: 500758603}
@@ -2739,7 +2756,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 124
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1513444906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2885,6 +2902,135 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588676609}
   m_CullTransparentMesh: 1
+--- !u!1 &1593621423
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1593621425}
+  - component: {fileID: 1593621424}
+  m_Layer: 0
+  m_Name: opening-bell-421471
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1593621424
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593621423}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 54654153a73d53b4984cdac3486dd515, type: 3}
+  m_Resource: {fileID: 8300000, guid: 54654153a73d53b4984cdac3486dd515, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.86
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &1593621425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593621423}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1607736033
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3118,6 +3264,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1513444901}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!1 &1828819560
 GameObject:
   m_ObjectHideFlags: 0
@@ -3423,6 +3572,9 @@ MonoBehaviour:
   damage: 10
   testVfx: {fileID: 0}
   ownerHealth: {fileID: 1466638678}
+  lowHitOffset: {x: 1, y: 1, z: 0}
+  midHitOffset: {x: 1, y: 1, z: 0}
+  highHitOffset: {x: 1, y: 1, z: 0}
 --- !u!65 &2098368320
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3495,3 +3647,4 @@ SceneRoots:
   - {fileID: 947559607}
   - {fileID: 604092203}
   - {fileID: 840555098}
+  - {fileID: 1593621425}
