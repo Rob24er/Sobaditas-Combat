@@ -23,6 +23,9 @@ public class EnemyAttack : MonoBehaviour
     public int CurrentAttackType => currentAttackType;
     public int CurrentAttackHeight => currentAttackHeight;
 
+    public int CurrentAttackType => currentAttackType;
+    public int CurrentAttackHeight => currentAttackHeight;
+
     [Header("Damage - Left Hand")]
     public int leftHandUp = 10;
     public int leftHandMid = 8;
@@ -70,6 +73,7 @@ public class EnemyAttack : MonoBehaviour
         animator.SetInteger(hashAttackHeight, height);
         animator.SetTrigger(hashAttack);
 
+        currentAttackType = type;
         isAttacking = true;
     }
 

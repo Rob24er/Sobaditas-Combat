@@ -1,87 +1,141 @@
 using UnityEngine;
 using System.Collections;
-using TMPro;
 using UnityEngine.UI;
+
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Health")]
     public int maxHealth = 100;
-    public int currentHealth;
+    public int currentHealth = 100;
     public Scrollbar healthBar;
-    public InGameTextVfx damageVFX;
-   
-    
-    //Hitstunt
-    public Animator animator;
-    
 
-
-    [Header("State")]
     public bool isGuarding;
+    public bool canBlockHighAndMid = true;
+
     public bool IsDead => currentHealth <= 0;
 
+<<<<<<< Updated upstream
+    SkinnedMeshRenderer[] skins;
+    Material[] mats;
+    Color[] original;
+    Coroutine flashCo;
+
+    public float lastDamagedTime = 0f;
+    public float lastBlockedTime = 0f;
+
+    [Header("VFX")]
+    public SFX_Char sfx_Char;
+=======
     [Header("VFX")]
     public FighterVFX vfx;
-    public Transform hitPoint; // posici?n donde aparecer?n los efectos
+    public Transform hitPoint; //efectos
 
     [Header("Timers")]
-    public float lastDamagedTime = -10f; // momento del ?ltimo golpe recibido
-    public float lastBlockedTime = -10f; // momento del ?ltimo bloqueo
+    public float lastDamagedTime = -10f; 
+    public float lastBlockedTime = -10f; 
+>>>>>>> Stashed changes
 
     void Awake()
     {
-        currentHealth = maxHealth;
+        if (sfx_Char == null) sfx_Char = GetComponent<SFX_Char>();
+        if (currentHealth <= 0) currentHealth = maxHealth;
 
-        if (vfx == null)
-            vfx = GetComponent<FighterVFX>();
+        skins = GetComponentsInChildren<SkinnedMeshRenderer>(true);
 
+        mats = new Material[skins.Length];
+        original = new Color[skins.Length];
+
+        for (int i = 0; i < skins.Length; i++)
+        {
+            mats[i] = skins[i].material;
+
+            if (mats[i] != null && mats[i].HasProperty("_BaseColor"))
+                original[i] = mats[i].GetColor("_BaseColor");
+            else if (mats[i] != null && mats[i].HasProperty("_Color"))
+                original[i] = mats[i].color;
+        }
+
+<<<<<<< Updated upstream
+=======
         if (hitPoint == null)
-            hitPoint = transform; // si no hay HitPoint asignado, usar pivot
+            hitPoint = transform;
+>>>>>>> Stashed changes
         UpdateBar();
     }
 
-    public void TakeHit(Hitbox hitbox)
+    //Recibir daño
+    public void TakeHit(Hitbox hit)
     {
         if (IsDead) return;
 
-        bool blocked = isGuarding && hitbox.height >= HitHeight.Mid;
-
-        if (blocked)
+        if (IsBlockedByGuard(hit))
         {
             lastBlockedTime = Time.time;
-
-            if (vfx != null)
-                vfx.PlayBlockVFX(hitPoint.position);
-
-            var go = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
-            go.GetComponent<TextMeshPro>().text = "Blocked!";
-
+            if (sfx_Char != null) sfx_Char.PlayBlock();
             return;
         }
 
+        currentHealth -= hit.damage;
+        if (sfx_Char != null) sfx_Char.PlayHit();
         lastDamagedTime = Time.time;
-        currentHealth -= hitbox.damage;
-        currentHealth = Mathf.Max(currentHealth, 0);
-
-        var dmg = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
-        dmg.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
-
-        if (vfx != null)
-            vfx.PlayHitVFX(hitPoint.position);
 
         UpdateBar();
 
-        if (animator != null)
-            animator.SetTrigger("hitY");
+        if (flashCo != null) StopCoroutine(flashCo);
+        flashCo = StartCoroutine(FlashRed());
 
         if (currentHealth <= 0)
         {
-            if (animator != null)
-                animator.SetTrigger("isDead");
+            if (sfx_Char != null) sfx_Char.PlayDeath();
+            StartCoroutine(DisableAfter(0.2f));
+        }
+        
+    }
 
-            Invoke(nameof(RestartScene), 5f);
+    //Bloqueo
+    bool IsBlockedByGuard(Hitbox hit)
+    {
+        if (!isGuarding) return false;
+
+        if (hit.height == HitHeight.Low) return false;
+
+        if (!canBlockHighAndMid) return false;
+
+        return hit.height == HitHeight.Mid || hit.height == HitHeight.High;
+    }
+
+    //Color rojo
+    IEnumerator FlashRed()
+    {
+        SetColor(Color.red);
+        yield return new WaitForSeconds(0.25f);
+        RestoreColor();
+    }
+
+    void SetColor(Color c)
+    {
+        for (int i = 0; i < mats.Length; i++)
+        {
+            var m = mats[i];
+            if (m == null) continue;
+
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
+            else if (m.HasProperty("_Color")) m.color = c;
         }
     }
+
+    void RestoreColor()
+    {
+        for (int i = 0; i < mats.Length; i++)
+        {
+            var m = mats[i];
+            if (m == null) continue;
+
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", original[i]);
+            else if (m.HasProperty("_Color")) m.color = original[i];
+        }
+    }
+
+    //Barra HP UI
     void UpdateBar()
     {
         if (healthBar == null) return;
@@ -89,10 +143,10 @@ public class PlayerHealth : MonoBehaviour
         float ratio = (float)currentHealth / (float)maxHealth;
         healthBar.size = Mathf.Clamp01(ratio);
     }
-    void RestartScene()
+
+    IEnumerator DisableAfter(float t)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
-        );
+        yield return new WaitForSeconds(t);
+        gameObject.SetActive(false);
     }
 }
