@@ -62,7 +62,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        UpdateXMovement(); 
+        UpdateXMovement();
 
         if (isAttacking != lastAttackState)
         {
@@ -74,6 +74,13 @@ public class PlayerAttack : MonoBehaviour
     //movimiento en X
     void UpdateXMovement()
     {
+        // No movement while guarding or attacking
+        if ((health != null && health.isGuarding) || isAttacking)
+        {
+            animator.SetFloat(hashXMovement, lastXDir);
+            return;
+        }
+
         float xMove = 0f;
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -88,7 +95,6 @@ public class PlayerAttack : MonoBehaviour
 
         animator.SetFloat(hashXMovement, xMove);
     }
-
 
     public void TickCombat()
     {
@@ -109,6 +115,9 @@ public class PlayerAttack : MonoBehaviour
     void HandleAttackInput()
     {
         if (health != null && health.IsDead) return;
+
+        // Prevent attacking while guarding
+        if (health.isGuarding) return;
 
         int height = 1;
 
