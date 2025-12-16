@@ -1049,7 +1049,7 @@ MonoBehaviour:
   height: 2
   strength: 0
   damage: 10
-  testVfx: {fileID: 0}
+  testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1466638678}
   lowHitOffset: {x: 1, y: 1, z: 0}
   midHitOffset: {x: 1, y: 1, z: 0}
@@ -1248,7 +1248,7 @@ MonoBehaviour:
   height: 0
   strength: 0
   damage: 10
-  testVfx: {fileID: 0}
+  testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1466638678}
   lowHitOffset: {x: 1, y: 1, z: 0}
   midHitOffset: {x: 1, y: 1, z: 0}
@@ -2670,7 +2670,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 1054172247}
-  damageVFX: {fileID: 0}
+  damageVFX: {fileID: 1855578464915014209, guid: 5396fe2aa4b2c494a9ee43bad38059bd, type: 3}
   animator: {fileID: 1466638677}
   isGuarding: 0
   vfx: {fileID: 1513444907}
@@ -2796,6 +2796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitVFX: {fileID: 4515497926535975121, guid: bddb971e34eb14d48be30c7b922eb077, type: 3}
   blockVFX: {fileID: 8762405910555896786, guid: fcb74f28d107e284e80af037bfec14ca, type: 3}
+  lifeTime: 0.5
 --- !u!1 &1587736893
 GameObject:
   m_ObjectHideFlags: 0
@@ -3570,7 +3571,7 @@ MonoBehaviour:
   height: 1
   strength: 0
   damage: 10
-  testVfx: {fileID: 0}
+  testVfx: {fileID: 1513444907}
   ownerHealth: {fileID: 1466638678}
   lowHitOffset: {x: 1, y: 1, z: 0}
   midHitOffset: {x: 1, y: 1, z: 0}

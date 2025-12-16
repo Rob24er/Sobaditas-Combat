@@ -42,51 +42,44 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeHit(Hitbox hitbox)
     {
-        print("takehit");
         if (IsDead) return;
 
-        // decidir si se bloquea
-        bool blocked = isGuarding && hitbox.height != HitHeight.Low;
+        bool blocked = isGuarding && hitbox.height >= HitHeight.Mid;
 
         if (blocked)
         {
-            // registrar bloqueo
             lastBlockedTime = Time.time;
 
-            // reproducir VFX de bloqueo
             if (vfx != null)
                 vfx.PlayBlockVFX(hitPoint.position);
-            
-            var go= Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+
+            var go = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
             go.GetComponent<TextMeshPro>().text = "Blocked!";
+
+            return;
         }
-        else
+
+        lastDamagedTime = Time.time;
+        currentHealth -= hitbox.damage;
+        currentHealth = Mathf.Max(currentHealth, 0);
+
+        var dmg = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+        dmg.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
+
+        if (vfx != null)
+            vfx.PlayHitVFX(hitPoint.position);
+
+        UpdateBar();
+
+        if (animator != null)
+            animator.SetTrigger("hitY");
+
+        if (currentHealth <= 0)
         {
-            // registrar golpe recibido
-            lastDamagedTime = Time.time;
-
-            // aplicar da?o
-            currentHealth -= hitbox.damage;
-            var go= Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
-            go.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
-            
-            
-            // reproducir VFX de golpe
-            if (vfx != null)
-                vfx.PlayHitVFX(hitPoint.position);
-
-            // comprobar muerte
-            if (currentHealth <= 0)
-            {
-                currentHealth = 0;
-                Debug.Log(name + " DEAD");
+            if (animator != null)
                 animator.SetTrigger("isDead");
-                Invoke("RestartScene", 5f); 
-            }
-            UpdateBar();
-            
-            
-          animator.SetTrigger("hitY");
+
+            Invoke(nameof(RestartScene), 5f);
         }
     }
     void UpdateBar()
