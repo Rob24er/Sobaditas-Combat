@@ -26,7 +26,7 @@ public class InGameTextVfx : MonoBehaviour
     void Update()
     {
         // simple upward float
-        transform.position += Vector3.up * floatSpeed * Time.deltaTime;
+        //transform.position += Vector3.up * floatSpeed * Time.deltaTime;
     }
 
    
