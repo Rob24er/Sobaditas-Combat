@@ -13,18 +13,17 @@ public class PlayerHealth : MonoBehaviour
 
     public bool IsDead => currentHealth <= 0;
 
-<<<<<<< Updated upstream
+
     SkinnedMeshRenderer[] skins;
     Material[] mats;
     Color[] original;
     Coroutine flashCo;
 
-    public float lastDamagedTime = 0f;
-    public float lastBlockedTime = 0f;
+
 
     [Header("VFX")]
     public SFX_Char sfx_Char;
-=======
+
     [Header("VFX")]
     public FighterVFX vfx;
     public Transform hitPoint; //efectos
@@ -32,7 +31,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Timers")]
     public float lastDamagedTime = -10f; 
     public float lastBlockedTime = -10f; 
->>>>>>> Stashed changes
+
 
     void Awake()
     {
@@ -54,11 +53,10 @@ public class PlayerHealth : MonoBehaviour
                 original[i] = mats[i].color;
         }
 
-<<<<<<< Updated upstream
-=======
+
         if (hitPoint == null)
             hitPoint = transform;
->>>>>>> Stashed changes
+
         UpdateBar();
     }
 

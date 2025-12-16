@@ -23,9 +23,6 @@ public class EnemyAttack : MonoBehaviour
     public int CurrentAttackType => currentAttackType;
     public int CurrentAttackHeight => currentAttackHeight;
 
-    public int CurrentAttackType => currentAttackType;
-    public int CurrentAttackHeight => currentAttackHeight;
-
     [Header("Damage - Left Hand")]
     public int leftHandUp = 10;
     public int leftHandMid = 8;
