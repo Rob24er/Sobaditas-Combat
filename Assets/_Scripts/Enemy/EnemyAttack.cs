@@ -20,6 +20,8 @@ public class EnemyAttack : MonoBehaviour
 
     int currentAttackHeight = 1;
     int currentAttackType = 0;
+    public int CurrentAttackType => currentAttackType;
+    public int CurrentAttackHeight => currentAttackHeight;
 
     public int CurrentAttackType => currentAttackType;
     public int CurrentAttackHeight => currentAttackHeight;
