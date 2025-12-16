@@ -28,7 +28,8 @@ public class PlayerAttack : MonoBehaviour
 
     int currentAttackHeight = 1;
     int currentAttackType = 0;
-
+    public int CurrentAttackType => currentAttackType;
+    public int CurrentAttackHeight => currentAttackHeight;
     [Header("Damage - Left Hand")]
     public int leftHandUp = 10;
     public int leftHandMid = 8;
