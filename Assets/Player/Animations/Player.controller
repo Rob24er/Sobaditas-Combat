@@ -850,6 +850,23 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1109 &-1206848999452990123
+AnimatorTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: IsGuarding
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 4589090969305879771}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 1
 --- !u!1102 &-1064610040385325003
 AnimatorState:
   serializedVersion: 6
@@ -1797,20 +1814,20 @@ AnimatorStateMachine:
     m_Position: {x: 220, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4589090969305879771}
-    m_Position: {x: 70, y: 260, z: 0}
+    m_Position: {x: 710, y: 250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 9109892925515273765}
-    m_Position: {x: 620, y: 230, z: 0}
+    m_Position: {x: 390, y: 250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7415440769177505772}
-    m_Position: {x: 270, y: 430, z: 0}
+    m_Position: {x: 390, y: 490, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 4699944847184898765}
-    m_Position: {x: 640, y: 70, z: 0}
+    m_Position: {x: 690, y: 110, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 5219737352394015977}
-    m_Position: {x: 650, y: 380, z: 0}
+    m_Position: {x: 850, y: 520, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
@@ -1819,6 +1836,7 @@ AnimatorStateMachine:
     - {fileID: -1062722654317799439}
     - {fileID: -7217820346362561442}
     - {fileID: 5283821628049972510}
+    - {fileID: -1206848999452990123}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
   m_EntryPosition: {x: -20, y: 110, z: 0}
@@ -2130,7 +2148,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mixamo_com
+  m_Name: Dead
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
