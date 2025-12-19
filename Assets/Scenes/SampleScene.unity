@@ -379,7 +379,6 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
-  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -505,18 +504,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &330585548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86832f84a0cf34eb9b89129d49b7a15e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &383475792
 GameObject:
   m_ObjectHideFlags: 0
@@ -2478,11 +2465,11 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 985209176}
-  damageVFX: {fileID: 1855578464915014209, guid: 5396fe2aa4b2c494a9ee43bad38059bd, type: 3}
-  animator: {fileID: 1466638677}
   isGuarding: 0
-  vfx: {fileID: 0}
-  hitPoint: {fileID: 0}
+  canBlockHighAndMid: 1
+  sfx_Char: {fileID: 1466638683}
+  vfx: {fileID: 1513444907}
+  hitPoint: {fileID: 500758603}
   lastDamagedTime: 0
   lastBlockedTime: 0
 --- !u!114 &1466638679
@@ -2642,7 +2629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   animator: {fileID: 1513444895}
-  health: {fileID: 0}
+  health: {fileID: 1513444901}
 --- !u!114 &1513444900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2673,9 +2660,9 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 1054172247}
-  damageVFX: {fileID: 1855578464915014209, guid: 5396fe2aa4b2c494a9ee43bad38059bd, type: 3}
-  animator: {fileID: 1466638677}
   isGuarding: 0
+  canBlockHighAndMid: 1
+  sfx_Char: {fileID: 1513444906}
   vfx: {fileID: 1513444907}
   hitPoint: {fileID: 500758603}
   lastDamagedTime: 0
