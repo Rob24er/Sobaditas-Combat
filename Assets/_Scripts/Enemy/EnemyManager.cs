@@ -3,53 +3,53 @@ using System.Collections;
 
 public class EnemyManager : MonoBehaviour
 {
-    [Header("Referencias")]
+    [Header("References")]
     public Transform player;
     public EnemyMovement movement;
     public EnemyAttack attack;
     public PlayerHealth health;
     public Animator animator;
 
-    [Header("Distancias")]
+    [Header("Distances")]
     public float meleeRange = 2f;
     public float attackDistance = 1.2f;
     public float retreatDistance = 2.2f;
 
-    int hashXMovement;
-    float lastXDir = 1f;
-
-    [Header("Bloqueo")]
+    [Header("Block")]
     public float blockDuration = 1.0f;
 
-    [Header("Ritmo IA")]
+    [Header("AI Rhythm")]
     public Vector2 idleBetweenActions = new Vector2(0.5f, 0.8f);
-
     public float damageReactWindow = 0.1f;
+
+    int hashXMovement;
+    float lastXDir = 1f;
+    Coroutine aiRoutine;
 
     void Awake()
     {
-        if (movement == null) movement = GetComponent<EnemyMovement>();
-        if (attack == null) attack = GetComponent<EnemyAttack>();
-        if (health == null) health = GetComponent<PlayerHealth>();
-        if (animator == null) animator = GetComponent<Animator>();
+        movement ??= GetComponent<EnemyMovement>();
+        attack ??= GetComponent<EnemyAttack>();
+        health ??= GetComponent<PlayerHealth>();
+        animator ??= GetComponent<Animator>();
     }
 
     void Start()
     {
-        if (player == null)
+        if (!player)
         {
-            Debug.LogWarning("EnemyManager no tiene player asignado");
+            Debug.LogWarning($"{name} EnemyManager has no player assigned");
             enabled = false;
             return;
         }
 
         hashXMovement = Animator.StringToHash("XMovement");
-        StartCoroutine(AILoop());
+        aiRoutine = StartCoroutine(AILoop());
     }
 
     void Update()
     {
-        if (player != null && !health.IsDead)
+        if (!health.IsDead)
             FacePlayer();
     }
 
@@ -58,154 +58,87 @@ public class EnemyManager : MonoBehaviour
         Vector3 dir = player.position - transform.position;
         dir.y = 0f;
         if (dir.sqrMagnitude > 0.001f)
-        {
             transform.rotation = Quaternion.LookRotation(dir.normalized);
-        }
     }
 
-    // AI Main Loop
+
     IEnumerator AILoop()
     {
         while (!health.IsDead)
         {
-            float dist = HorizontalDistanceToPlayer();
+            float dist = DistanceToPlayer();
 
-            if (Time.time - health.lastDamagedTime < damageReactWindow)
+            if (RecentlyDamaged())
             {
-                attack.SetGuard(false);
+                YieldGuardOff();
                 yield return RetreatToDistance(retreatDistance);
-                yield return SmallIdle();
+                yield return Idle();
                 continue;
             }
 
-            if (dist > meleeRange + 0.1f)
+            if (dist > meleeRange)
             {
-                attack.SetGuard(false);
+                YieldGuardOff();
                 yield return MoveToDistance(meleeRange);
-                yield return SmallIdle();
+                yield return Idle();
                 continue;
             }
 
-            yield return SmallIdle();
+            yield return Idle();
 
-            dist = HorizontalDistanceToPlayer();
             if (health.IsDead) break;
-            if (dist > meleeRange + 0.1f) continue;
+            dist = DistanceToPlayer();
+            if (dist > meleeRange) continue;
 
-            if (dist > attackDistance + 0.1f)
-            {
-                int roll = Random.Range(0, 100);
-
-                if (roll < 60)
-                {
-                    attack.SetGuard(false);
-                    yield return MoveToDistance(attackDistance);
-                    yield return SmallIdle();
-                }
-                else if (roll < 85)
-                {
-                    yield return BlockSequence();
-                }
-                else
-                {
-                    attack.SetGuard(false);
-                    yield return RetreatToDistance(retreatDistance);
-                }
-            }
+            if (dist > attackDistance)
+                yield return MidRangeDecision();
             else
-            {
-                int roll = Random.Range(0, 100);
-
-                if (roll < 65)
-                {
-                    yield return AttackSequence();
-                }
-                else if (roll < 90)
-                {
-                    yield return BlockSequence();
-                }
-                else
-                {
-                    attack.SetGuard(false);
-                    yield return RetreatToDistance(retreatDistance);
-                }
-            }
+                yield return CloseRangeDecision();
         }
 
-        movement.Stop();
-        UpdateXMovement(0f);
-        attack.SetGuard(false);
+        ShutdownAI();
     }
 
-    IEnumerator SmallIdle()
-    {
-        float t = Random.Range(idleBetweenActions.x, idleBetweenActions.y);
-        movement.Stop();
-        UpdateXMovement(0f);
-        yield return new WaitForSeconds(t);
-    }
 
-    IEnumerator MoveToDistance(float desiredDistance)
+    IEnumerator MidRangeDecision()
     {
-        if (health.IsDead) yield break;
+        int roll = Random.Range(0, 100);
 
-        while (!health.IsDead)
+        if (roll < 60)
         {
-            if (Time.time - health.lastDamagedTime < damageReactWindow)
-                yield break;
-
-            float dist = HorizontalDistanceToPlayer();
-            float delta = dist - desiredDistance;
-
-            if (Mathf.Abs(delta) < 0.05f)
-            {
-                movement.Stop();
-                UpdateXMovement(0f);
-                yield break;
-            }
-
-            float dirSign = delta > 0f ? 1f : -1f;
-            movement.Move(dirSign);
-            UpdateXMovement(dirSign);
-
-            yield return null;
+            YieldGuardOff();
+            yield return MoveToDistance(attackDistance);
+            yield return Idle();
         }
-
-        movement.Stop();
-        UpdateXMovement(0f);
-    }
-
-    IEnumerator RetreatToDistance(float desiredDistance)
-    {
-        if (health.IsDead) yield break;
-
-        while (!health.IsDead)
+        else if (roll < 85)
         {
-            float dist = HorizontalDistanceToPlayer();
-            float delta = dist - desiredDistance;
-
-            if (Mathf.Abs(delta) < 0.05f)
-            {
-                movement.Stop();
-                UpdateXMovement(0f);
-                yield break;
-            }
-
-            float dirSign = dist < desiredDistance ? -1f : 1f;
-            movement.Move(dirSign);
-            UpdateXMovement(dirSign);
-
-            yield return null;
+            yield return BlockSequence();
         }
-
-        movement.Stop();
-        UpdateXMovement(0f);
+        else
+        {
+            YieldGuardOff();
+            yield return RetreatToDistance(retreatDistance);
+        }
     }
 
+    IEnumerator CloseRangeDecision()
+    {
+        int roll = Random.Range(0, 100);
+
+        if (roll < 65)
+            yield return AttackSequence();
+        else if (roll < 90)
+            yield return BlockSequence();
+        else
+        {
+            YieldGuardOff();
+            yield return RetreatToDistance(retreatDistance);
+        }
+    }
+
+ 
     IEnumerator AttackSequence()
     {
-        if (health.IsDead) yield break;
-
         yield return MoveToDistance(attackDistance);
         if (health.IsDead) yield break;
 
@@ -214,18 +147,13 @@ public class EnemyManager : MonoBehaviour
 
         int post = Random.Range(0, 100);
 
-        if (post < 40)
-        {
-            if (Time.time - health.lastDamagedTime >= damageReactWindow)
-                yield return AttackOnce();
-        }
+        if (post < 40 && !RecentlyDamaged())
+            yield return AttackOnce();
         else if (post < 80)
-        {
             yield return BlockSequence();
-        }
         else
         {
-            attack.SetGuard(false);
+            YieldGuardOff();
             yield return RetreatToDistance(retreatDistance);
         }
     }
@@ -234,71 +162,95 @@ public class EnemyManager : MonoBehaviour
     {
         if (health.IsDead) yield break;
 
-        movement.Stop();
-        UpdateXMovement(0f);
-        attack.SetGuard(false);
+        StopMovement();
+        YieldGuardOff();
 
-        int height = Random.Range(0, 3);
-        int type = Random.Range(0, 3);
-
-        attack.DoAttack(height, type);
+        attack.DoAttack(Random.Range(0, 3), Random.Range(0, 3));
 
         while (attack.IsAttacking && !health.IsDead)
-        {
             yield return null;
-        }
 
-        yield return SmallIdle();
+        yield return Idle();
     }
 
     IEnumerator BlockSequence()
     {
-        if (health.IsDead) yield break;
-
-        movement.Stop();
-        UpdateXMovement(0f);
+        StopMovement();
         attack.SetGuard(true);
 
-        float startBlockedTime = health.lastBlockedTime;
-        float startDamagedTime = health.lastDamagedTime;
-        float endTime = Time.time + blockDuration;
+        float blockStart = health.lastBlockedTime;
+        float damageStart = health.lastDamagedTime;
+        float end = Time.time + blockDuration;
 
-        while (Time.time < endTime && !health.IsDead)
-        {
+        while (Time.time < end && !health.IsDead)
             yield return null;
-        }
 
-        attack.SetGuard(false);
+        YieldGuardOff();
         if (health.IsDead) yield break;
 
-        bool blockedSomething = health.lastBlockedTime > startBlockedTime;
-        bool tookDamage = health.lastDamagedTime > startDamagedTime;
+        bool blocked = health.lastBlockedTime > blockStart;
+        bool damaged = health.lastDamagedTime > damageStart;
 
-        if (blockedSomething)
-        {
+        if (blocked)
             yield return AttackOnce();
-        }
-        else if (tookDamage)
+        else if (damaged)
         {
-            int choice = Random.Range(0, 2);
-
-            if (choice == 0)
+            if (Random.value < 0.5f)
             {
                 yield return MoveToDistance(attackDistance);
                 yield return AttackOnce();
             }
             else
-            {
                 yield return RetreatToDistance(retreatDistance);
-            }
         }
         else
-        {
             yield return RetreatToDistance(retreatDistance);
-        }
     }
 
-    float HorizontalDistanceToPlayer()
+
+    IEnumerator MoveToDistance(float desired)
+    {
+        while (!health.IsDead)
+        {
+            if (RecentlyDamaged()) yield break;
+
+            float delta = DistanceToPlayer() - desired;
+
+            if (Mathf.Abs(delta) < 0.05f)
+                break;
+
+            Move(delta > 0f ? 1f : -1f);
+            yield return null;
+        }
+
+        StopMovement();
+    }
+
+    IEnumerator RetreatToDistance(float desired)
+    {
+ 
+        float startDist = DistanceToPlayer();
+        float targetDist = Mathf.Max(startDist, desired);
+
+        while (!health.IsDead)
+        {
+            float currentDist = DistanceToPlayer();
+
+            if (currentDist >= targetDist - 0.05f)
+                break;
+
+            Move(-1f); 
+            yield return null;
+        }
+
+        StopMovement();
+    }
+
+ 
+    bool RecentlyDamaged() =>
+        Time.time - health.lastDamagedTime < damageReactWindow;
+
+    float DistanceToPlayer()
     {
         Vector3 a = transform.position;
         Vector3 b = player.position;
@@ -306,7 +258,26 @@ public class EnemyManager : MonoBehaviour
         return Vector3.Distance(a, b);
     }
 
-    // AI-based XMovement (no input)
+    void Move(float dir)
+    {
+        movement.Move(dir);
+        UpdateXMovement(dir);
+    }
+
+    void StopMovement()
+    {
+        movement.Stop();
+        UpdateXMovement(0f);
+    }
+
+    void YieldGuardOff() => attack.SetGuard(false);
+
+    IEnumerator Idle()
+    {
+        StopMovement();
+        yield return new WaitForSeconds(Random.Range(idleBetweenActions.x, idleBetweenActions.y));
+    }
+
     void UpdateXMovement(float xMove)
     {
         if (Mathf.Approximately(xMove, 0f))
@@ -315,5 +286,12 @@ public class EnemyManager : MonoBehaviour
             lastXDir = xMove;
 
         animator.SetFloat(hashXMovement, xMove);
+    }
+
+    void ShutdownAI()
+    {
+        StopAllCoroutines();
+        StopMovement();
+        YieldGuardOff();
     }
 }

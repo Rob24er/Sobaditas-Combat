@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health")]
@@ -11,19 +13,26 @@ public class PlayerHealth : MonoBehaviour
     public Scrollbar healthBar;
     public InGameTextVfx damageVFX;
 
-
     [Header("State")]
     public bool isGuarding;
-    public bool IsDead => currentHealth <= 0;
+    public bool isDead;
+
+   
+    public bool IsDead => isDead;
+
+    [Header("Animation")]
+    public Animator animator;
 
     [Header("VFX")]
     public FighterVFX vfx;
-    public Transform hitPoint; // posici?n donde aparecer?n los efectos
+    public Transform hitPoint;
 
     [Header("Timers")]
-    public float lastDamagedTime = -10f; // momento del ?ltimo golpe recibido
-    public float lastBlockedTime = -10f; // momento del ?ltimo bloqueo
+    public float lastDamagedTime = -10f;
+    public float lastBlockedTime = -10f;
 
+    [Header("Death")]
+    public float restartDelay = 5f;
 
     void Awake()
     {
@@ -32,25 +41,25 @@ public class PlayerHealth : MonoBehaviour
         if (vfx == null)
             vfx = GetComponent<FighterVFX>();
 
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
         if (hitPoint == null)
-            hitPoint = transform; // si no hay HitPoint asignado, usar pivot
+            hitPoint = transform;
+
         UpdateBar();
     }
 
     public void TakeHit(Hitbox hitbox)
     {
-        print("takehit");
-        if (IsDead) return;
+        if (isDead) return;
 
-        // decidir si se bloquea
         bool blocked = isGuarding && hitbox.height != HitHeight.Low;
 
         if (blocked)
         {
-            // registrar bloqueo
             lastBlockedTime = Time.time;
 
-            // reproducir VFX de bloqueo
             if (vfx != null)
                 vfx.PlayBlockVFX(hitPoint.position);
 
@@ -59,30 +68,50 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
-            // registrar golpe recibido
             lastDamagedTime = Time.time;
 
-            // aplicar da?o
             currentHealth -= hitbox.damage;
+
             var go = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
             go.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
 
-
-
-            // reproducir VFX de golpe
             if (vfx != null)
                 vfx.PlayHitVFX(hitPoint.position);
 
-            // comprobar muerte
             if (currentHealth <= 0)
             {
-                currentHealth = 0;
-                Debug.Log(name + " DEAD");
+                Die();
             }
-            UpdateBar();
 
+            UpdateBar();
         }
     }
+
+    void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+        currentHealth = 0;
+
+        Debug.Log(name + " DEAD");
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("Die");
+            animator.SetTrigger("Die");
+        }
+
+        StartCoroutine(RestartSceneAfterDelay());
+    }
+
+    IEnumerator RestartSceneAfterDelay()
+    {
+        yield return new WaitForSeconds(restartDelay);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     void UpdateBar()
     {
         if (healthBar == null) return;
