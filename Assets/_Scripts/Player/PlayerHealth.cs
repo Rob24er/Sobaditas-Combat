@@ -1,139 +1,88 @@
+using System;
 using UnityEngine;
 using System.Collections;
+using TMPro;
 using UnityEngine.UI;
-
 public class PlayerHealth : MonoBehaviour
 {
+    [Header("Health")]
     public int maxHealth = 100;
-    public int currentHealth = 100;
+    public int currentHealth;
     public Scrollbar healthBar;
+    public InGameTextVfx damageVFX;
 
+
+    [Header("State")]
     public bool isGuarding;
-    public bool canBlockHighAndMid = true;
-
     public bool IsDead => currentHealth <= 0;
-
-
-    SkinnedMeshRenderer[] skins;
-    Material[] mats;
-    Color[] original;
-    Coroutine flashCo;
-
-
-
-    [Header("VFX")]
-    public SFX_Char sfx_Char;
 
     [Header("VFX")]
     public FighterVFX vfx;
-    public Transform hitPoint; //efectos
+    public Transform hitPoint; // posici?n donde aparecer?n los efectos
 
     [Header("Timers")]
-    public float lastDamagedTime = -10f; 
-    public float lastBlockedTime = -10f; 
+    public float lastDamagedTime = -10f; // momento del ?ltimo golpe recibido
+    public float lastBlockedTime = -10f; // momento del ?ltimo bloqueo
 
 
     void Awake()
     {
-        if (sfx_Char == null) sfx_Char = GetComponent<SFX_Char>();
-        if (currentHealth <= 0) currentHealth = maxHealth;
+        currentHealth = maxHealth;
 
-        skins = GetComponentsInChildren<SkinnedMeshRenderer>(true);
-
-        mats = new Material[skins.Length];
-        original = new Color[skins.Length];
-
-        for (int i = 0; i < skins.Length; i++)
-        {
-            mats[i] = skins[i].material;
-
-            if (mats[i] != null && mats[i].HasProperty("_BaseColor"))
-                original[i] = mats[i].GetColor("_BaseColor");
-            else if (mats[i] != null && mats[i].HasProperty("_Color"))
-                original[i] = mats[i].color;
-        }
-
+        if (vfx == null)
+            vfx = GetComponent<FighterVFX>();
 
         if (hitPoint == null)
-            hitPoint = transform;
-
+            hitPoint = transform; // si no hay HitPoint asignado, usar pivot
         UpdateBar();
     }
 
-    //Recibir daño
-    public void TakeHit(Hitbox hit)
+    public void TakeHit(Hitbox hitbox)
     {
+        print("takehit");
         if (IsDead) return;
 
-        if (IsBlockedByGuard(hit))
+        // decidir si se bloquea
+        bool blocked = isGuarding && hitbox.height != HitHeight.Low;
+
+        if (blocked)
         {
+            // registrar bloqueo
             lastBlockedTime = Time.time;
-            if (sfx_Char != null) sfx_Char.PlayBlock();
-            return;
+
+            // reproducir VFX de bloqueo
+            if (vfx != null)
+                vfx.PlayBlockVFX(hitPoint.position);
+
+            var go = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+            go.GetComponent<TextMeshPro>().text = "Blocked!";
         }
-
-        currentHealth -= hit.damage;
-        if (sfx_Char != null) sfx_Char.PlayHit();
-        lastDamagedTime = Time.time;
-
-        UpdateBar();
-
-        if (flashCo != null) StopCoroutine(flashCo);
-        flashCo = StartCoroutine(FlashRed());
-
-        if (currentHealth <= 0)
+        else
         {
-            if (sfx_Char != null) sfx_Char.PlayDeath();
-            StartCoroutine(DisableAfter(0.2f));
-        }
-        
-    }
+            // registrar golpe recibido
+            lastDamagedTime = Time.time;
 
-    //Bloqueo
-    bool IsBlockedByGuard(Hitbox hit)
-    {
-        if (!isGuarding) return false;
+            // aplicar da?o
+            currentHealth -= hitbox.damage;
+            var go = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+            go.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
 
-        if (hit.height == HitHeight.Low) return false;
 
-        if (!canBlockHighAndMid) return false;
 
-        return hit.height == HitHeight.Mid || hit.height == HitHeight.High;
-    }
+            // reproducir VFX de golpe
+            if (vfx != null)
+                vfx.PlayHitVFX(hitPoint.position);
 
-    //Color rojo
-    IEnumerator FlashRed()
-    {
-        SetColor(Color.red);
-        yield return new WaitForSeconds(0.25f);
-        RestoreColor();
-    }
+            // comprobar muerte
+            if (currentHealth <= 0)
+            {
+                currentHealth = 0;
+                Debug.Log(name + " DEAD");
+            }
+            UpdateBar();
 
-    void SetColor(Color c)
-    {
-        for (int i = 0; i < mats.Length; i++)
-        {
-            var m = mats[i];
-            if (m == null) continue;
-
-            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
-            else if (m.HasProperty("_Color")) m.color = c;
         }
     }
-
-    void RestoreColor()
-    {
-        for (int i = 0; i < mats.Length; i++)
-        {
-            var m = mats[i];
-            if (m == null) continue;
-
-            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", original[i]);
-            else if (m.HasProperty("_Color")) m.color = original[i];
-        }
-    }
-
-    //Barra HP UI
     void UpdateBar()
     {
         if (healthBar == null) return;
@@ -142,9 +91,9 @@ public class PlayerHealth : MonoBehaviour
         healthBar.size = Mathf.Clamp01(ratio);
     }
 
-    IEnumerator DisableAfter(float t)
+    public void MessageFix(string msg)
     {
-        yield return new WaitForSeconds(t);
-        gameObject.SetActive(false);
+        var go = Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+        go.GetComponent<TextMeshPro>().text = msg;
     }
 }
