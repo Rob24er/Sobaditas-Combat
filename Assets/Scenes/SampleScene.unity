@@ -2669,7 +2669,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 1054172247}
-  damageVFX: {fileID: 0}
+  damageVFX: {fileID: 1855578464915014209, guid: 5396fe2aa4b2c494a9ee43bad38059bd, type: 3}
   isGuarding: 0
   vfx: {fileID: 1513444907}
   hitPoint: {fileID: 500758603}
