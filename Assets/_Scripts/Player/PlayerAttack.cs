@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System;
 public class PlayerAttack : MonoBehaviour
 {
     //gameObjects
@@ -10,7 +11,7 @@ public class PlayerAttack : MonoBehaviour
     public Hitbox hitboxLow;
     public Hitbox hitboxMid;
     public Hitbox hitboxHigh;
-
+    public static event Action<string> OnAttackEvent;
     //variables
     int hashAttackType;
     int hashAttackHeight;
@@ -77,11 +78,19 @@ public class PlayerAttack : MonoBehaviour
         float xMove = 0f;
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
             xMove = -1f;
+
+        }
         else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
             xMove = +1f;
+
+        }
         else
+        {
             xMove = lastXDir;
+        }
 
         if (xMove != 0f)
             lastXDir = xMove;
@@ -118,9 +127,21 @@ public class PlayerAttack : MonoBehaviour
             height = 2;
 
         int type = -1;
-        if (Input.GetKeyDown(KeyCode.J)) type = 0;
-        else if (Input.GetKeyDown(KeyCode.K)) type = 1;
-        else if (Input.GetKeyDown(KeyCode.L)) type = 2;
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            type = 0;
+            health.MessageFix("High Attack");
+        }
+        else if (Input.GetKeyDown(KeyCode.K))
+        {
+            type = 1;
+            health.MessageFix("Medium Attack");
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            type = 2;
+            health.MessageFix("Low Attack");
+        }
 
         if (type == -1) return;
 

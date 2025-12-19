@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using TMPro;
@@ -22,6 +23,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Timers")]
     public float lastDamagedTime = -10f; // momento del ?ltimo golpe recibido
     public float lastBlockedTime = -10f; // momento del ?ltimo bloqueo
+    
 
     void Awake()
     {
@@ -66,6 +68,7 @@ public class PlayerHealth : MonoBehaviour
             go.GetComponent<TextMeshPro>().text = hitbox.damage.ToString();
             
             
+            
             // reproducir VFX de golpe
             if (vfx != null)
                 vfx.PlayHitVFX(hitPoint.position);
@@ -86,5 +89,11 @@ public class PlayerHealth : MonoBehaviour
 
         float ratio = (float)currentHealth / (float)maxHealth;
         healthBar.size = Mathf.Clamp01(ratio);
+    }
+
+    public void MessageFix(string msg)
+    {
+        var go= Instantiate(damageVFX, hitPoint.position, Quaternion.identity);
+        go.GetComponent<TextMeshPro>().text = msg;
     }
 }

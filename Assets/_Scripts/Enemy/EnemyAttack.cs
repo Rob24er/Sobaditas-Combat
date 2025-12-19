@@ -68,6 +68,18 @@ public class EnemyAttack : MonoBehaviour
         animator.SetInteger(hashAttackHeight, height);
         animator.SetTrigger(hashAttack);
 
+        switch (currentAttackHeight)
+        {
+            case 0:
+                health.MessageFix("Low Attack");
+                break;
+            case 1:
+                health.MessageFix("Medium Attack");
+                break;
+            case 2:
+                health.MessageFix("High Attack");
+                break;
+        }
         isAttacking = true;
     }
 
@@ -118,7 +130,7 @@ public class EnemyAttack : MonoBehaviour
         else target.DisableHit();
     }
 
-    //Detectar q daño hacer
+    //Detectar q daï¿½o hacer
     int GetDamageForCurrentAttack()
     {
         if (currentAttackType == 0)

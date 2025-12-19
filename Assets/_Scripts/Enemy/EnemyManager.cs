@@ -243,6 +243,7 @@ public class EnemyManager : MonoBehaviour
 
         attack.DoAttack(height, type);
 
+       
         while (attack.IsAttacking && !health.IsDead)
         {
             yield return null;
